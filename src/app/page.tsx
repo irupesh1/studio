@@ -1,18 +1,44 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChatInterface } from "@/components/chat-interface";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import type { Message } from "@/types";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [feedbackPromptShown, setFeedbackPromptShown] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!feedbackPromptShown) {
+      const timer = setTimeout(() => {
+        toast({
+          title: "Enjoying NexaAI?",
+          description: "Your feedback helps us improve. Would you like to share your thoughts?",
+          action: (
+            <Link href="/feedback">
+              <Button variant="outline" size="sm">
+                Give Feedback
+              </Button>
+            </Link>
+          ),
+          duration: 10000, 
+        });
+        setFeedbackPromptShown(true);
+      }, 30000); // 30 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [feedbackPromptShown, toast]);
 
   const startNewChat = () => {
     setMessages([]);
