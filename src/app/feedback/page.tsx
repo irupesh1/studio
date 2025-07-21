@@ -61,7 +61,7 @@ export default function FeedbackPage() {
     <div className="min-h-screen bg-muted/20 py-8 px-4">
       <div className="container mx-auto max-w-2xl">
         <Card className="overflow-hidden shadow-lg rounded-xl">
-          <CardHeader className="flex flex-row items-center gap-4 p-4 bg-card">
+          <CardHeader className="flex flex-row items-center gap-4 p-4 bg-card border-b">
             <Link href="/" passHref>
               <Button variant="outline" size="icon" className="rounded-full h-8 w-8">
                 <ArrowLeft className="h-4 w-4" />
@@ -77,7 +77,7 @@ export default function FeedbackPage() {
           </CardHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardContent className="p-4 space-y-4">
+              <CardContent className="p-6 space-y-6">
                 <FormField
                   control={form.control}
                   name="name"
@@ -101,6 +101,7 @@ export default function FeedbackPage() {
                         <Textarea
                           placeholder="Tell us what you think..."
                           className="resize-none text-sm"
+                          rows={4}
                           {...field}
                         />
                       </FormControl>
@@ -118,6 +119,7 @@ export default function FeedbackPage() {
                         <Textarea
                           placeholder="What new features would you like to see in NexaAI?"
                           className="resize-none text-sm"
+                          rows={3}
                           {...field}
                         />
                       </FormControl>
@@ -128,15 +130,15 @@ export default function FeedbackPage() {
 
                 <Separator />
                 
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium">Have more time?</p>
+                <div className="flex items-center justify-center gap-2">
+                  <p className="text-sm text-muted-foreground">Have more time?</p>
                    <a href="#" className="text-sm text-primary underline-offset-4 hover:underline">
                       Quick Survey
                     </a>
                 </div>
               </CardContent>
-              <CardFooter className="p-4 pt-0 flex justify-center">
-                <Button type="submit" className="w-96">Submit Feedback</Button>
+              <CardFooter className="bg-muted/50 p-4 flex justify-center">
+                <Button type="submit" className="w-full max-w-xs">Submit Feedback</Button>
               </CardFooter>
             </form>
           </Form>
