@@ -14,7 +14,7 @@ export async function sendMessage(message: string): Promise<Message> {
       sentiment: sentiment,
     });
 
-    const { media } = await textToSpeech(response);
+    const { media } = await textToSpeech({ response });
 
     return {
       id: Date.now().toString(),

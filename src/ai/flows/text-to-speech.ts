@@ -13,7 +13,9 @@ import {z} from 'genkit';
 import wav from 'wav';
 import {googleAI} from '@genkit-ai/googleai';
 
-const TextToSpeechInputSchema = z.string();
+const TextToSpeechInputSchema = z.object({
+  response: z.string().describe('The text to convert to speech.'),
+});
 export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
 const TextToSpeechOutputSchema = z.object({
@@ -54,7 +56,7 @@ const textToSpeechFlow = ai.defineFlow(
     inputSchema: TextToSpeechInputSchema,
     outputSchema: TextToSpeechOutputSchema,
   },
-  async (query) => {
+  async ({ response }) => {
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
       config: {
@@ -65,7 +67,7 @@ const textToSpeechFlow = ai.defineFlow(
           },
         },
       },
-      prompt: query,
+      prompt: response,
     });
     if (!media) {
       throw new Error('no media returned');
