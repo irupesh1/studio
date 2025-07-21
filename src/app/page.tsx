@@ -54,13 +54,18 @@ export default function Home() {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem className="flex justify-center">
+              <Link href="/about" passHref>
                 <SidebarMenuButton
+                  asChild
                   tooltip="About NexaAI"
                   className="bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full w-auto px-4"
                 >
-                  <span className="text-xs">About NexaAI</span>
-                  <ArrowUpRight />
+                  <span>
+                    <span className="text-xs">About NexaAI</span>
+                    <ArrowUpRight />
+                  </span>
                 </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
