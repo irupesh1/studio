@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function AboutPage() {
   const highlights = [
@@ -86,11 +86,11 @@ export default function AboutPage() {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <Avatar>
+                      <AvatarImage src="https://placehold.co/40x40.png" alt="Developer" data-ai-hint="developer portrait" />
                       <AvatarFallback>D</AvatarFallback>
                     </Avatar>
                     <div>
                       <CardTitle className="text-lg">Crafted with Passion</CardTitle>
-                      <CardDescription>— Developer of NexaAI</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -98,6 +98,7 @@ export default function AboutPage() {
                   <blockquote className="text-muted-foreground italic">
                     “NexaAI was built to prove that one passionate developer can create something powerful, ethical, and user-friendly without a billion-dollar company behind them.”
                   </blockquote>
+                  <CardDescription className="text-right mt-4">— Developer of NexaAI</CardDescription>
                 </CardContent>
               </Card>
             </section>
