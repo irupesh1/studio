@@ -34,28 +34,10 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  
-  const handleInitialGreeting = () => {
-     if (messages.length === 0) {
-        setMessages([
-          {
-            id: 'initial-greeting',
-            role: 'assistant',
-            content: "Hello! I'm NexaAI. How can I assist you today?",
-          },
-        ]);
-     }
-  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-    
-    let currentMessages = messages;
-    if (messages.length > 0 && messages[0].id === 'initial-greeting') {
-        currentMessages = [];
-        setMessages([]);
-    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -63,7 +45,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
       content: input,
     };
     
-    const newMessages = [...currentMessages, userMessage];
+    const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput('');
     setIsLoading(true);
@@ -78,6 +60,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         title: 'Error',
         description: 'Failed to get a response from the AI.',
       });
+      // Rollback the optimistic update on error
       setMessages(prev => prev.filter(m => m.id !== userMessage.id)); 
     } finally {
       setIsLoading(false);
@@ -85,16 +68,21 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   };
 
   const handleStopGenerating = () => {
+    // This is a hard-reload, which will stop any pending requests.
+    // A more sophisticated implementation might use AbortController.
     window.location.reload();
   };
   
   const handlePlayAudio = (message: Message) => {
     if (audioRef.current) {
+      // If the same message is clicked, pause it.
       if (playingMessageId === message.id) {
         audioRef.current.pause();
         setPlayingMessageId(null);
         return;
       }
+      // If a different message is playing, pause it before starting the new one.
+      audioRef.current.pause();
     }
 
     if (message.audioUrl) {
@@ -118,7 +106,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                   <div className="inline-block p-4 bg-primary/10 rounded-full">
                       <Bot size={40} className="text-primary" />
                   </div>
-                  <h1 className="text-2xl font-bold mt-4">How can I help you today?</h1>
+                  <h1 className="text-2xl font-bold mt-4">Hello! I'm NexaAI.</h1>
+                  <p className="text-muted-foreground mt-2">How can I assist you today?</p>
               </div>
           ) : (
             <div className="space-y-6">
@@ -213,7 +202,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        onFocus={handleInitialGreeting}
                         placeholder="Ask NexaAI Anything......"
                         className="w-full h-12 pr-14 rounded-full shadow-lg bg-muted/50 focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-primary"
                         disabled={isLoading}

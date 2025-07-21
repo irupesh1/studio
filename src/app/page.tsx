@@ -28,18 +28,24 @@ export default function Home() {
     try {
       const savedMessages = localStorage.getItem('chatMessages');
       if (savedMessages) {
-        setMessages(JSON.parse(savedMessages));
+        const parsedMessages = JSON.parse(savedMessages);
+        if (Array.isArray(parsedMessages)) {
+          setMessages(parsedMessages);
+        }
       }
     } catch (error) {
         console.error("Failed to parse messages from localStorage", error);
-        // Set to empty array if parsing fails
         setMessages([]);
     }
   }, []);
 
   useEffect(() => {
+    // We don't save an empty array, which could happen on initial load before any messages are sent.
     if (messages.length > 0) {
       localStorage.setItem('chatMessages', JSON.stringify(messages));
+    } else {
+       // If messages are cleared, remove from local storage
+       localStorage.removeItem('chatMessages');
     }
   }, [messages]);
 
