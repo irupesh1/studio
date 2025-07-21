@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
-import { LogOut, User, KeyRound, Image as ImageIcon, MessageSquare } from "lucide-react";
+import { LogOut, User, KeyRound, Image as ImageIcon, MessageSquare, Palette } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
 const credentialsFormSchema = z.object({
@@ -26,6 +27,12 @@ const personalizationFormSchema = z.object({
   description: z.string().min(1, { message: "Description is required." }),
 });
 type PersonalizationFormValues = z.infer<typeof personalizationFormSchema>;
+
+const appearanceFormSchema = z.object({
+    fontFamily: z.string(),
+    titleColor: z.string().optional(),
+});
+type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -57,6 +64,15 @@ export default function AdminDashboardPage() {
     },
   });
 
+  const appearanceForm = useForm<AppearanceFormValues>({
+    resolver: zodResolver(appearanceFormSchema),
+    defaultValues: {
+      fontFamily: localStorage.getItem("welcomeFontFamily") || "Inter",
+      titleColor: localStorage.getItem("welcomeTitleColor") || "#000000",
+    }
+  });
+
+
   const handleCredentialsSubmit = (data: CredentialsFormValues) => {
     localStorage.setItem("adminUsername", data.username);
     localStorage.setItem("adminPassword", data.password);
@@ -67,6 +83,12 @@ export default function AdminDashboardPage() {
     localStorage.setItem("welcomeTitle", data.title);
     localStorage.setItem("welcomeDescription", data.description);
     toast({ title: "Success", description: "Welcome screen updated." });
+  };
+
+  const handleAppearanceSubmit = (data: AppearanceFormValues) => {
+    localStorage.setItem("welcomeFontFamily", data.fontFamily);
+    localStorage.setItem("welcomeTitleColor", data.titleColor || '#000000');
+    toast({ title: "Success", description: "Appearance settings updated." });
   };
 
   const handleLogout = () => {
@@ -168,12 +190,61 @@ export default function AdminDashboardPage() {
                 </CardContent>
             </Card>
 
+            {/* Appearance Customization Card */}
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Palette/> Appearance Customization</CardTitle>
+                    <CardDescription>Customize the font and colors of the welcome screen.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Form {...appearanceForm}>
+                        <form onSubmit={appearanceForm.handleSubmit(handleAppearanceSubmit)} className="space-y-4">
+                            <FormField
+                                control={appearanceForm.control}
+                                name="fontFamily"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Font Family</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                        <SelectValue placeholder="Select a font" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Inter">Inter</SelectItem>
+                                        <SelectItem value="Roboto">Roboto</SelectItem>
+                                        <SelectItem value="Lato">Lato</SelectItem>
+                                    </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={appearanceForm.control}
+                                name="titleColor"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Welcome Title Color</FormLabel>
+                                    <FormControl><Input type="color" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                            <Button type="submit">Update Appearance</Button>
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
+
+
              {/* Logo Card */}
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><ImageIcon/> Logo Customization</CardTitle>
                     <CardDescription>This feature requires file handling capabilities.</CardDescription>
-                </CardHeader>
+                </Header>
                 <CardContent>
                     <p className="text-sm text-muted-foreground">
                         Logo and icon customization is planned for a future update. The current AI prototyping environment does not support file uploads.
