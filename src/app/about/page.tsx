@@ -29,6 +29,7 @@ const defaultContent = {
 
 export default function AboutPage() {
   const [content, setContent] = useState(defaultContent);
+  const [aboutPageAvatar, setAboutPageAvatar] = useState("https://placehold.co/40x40.png");
 
   useEffect(() => {
     const storedContent = localStorage.getItem("aboutPageContent");
@@ -41,6 +42,12 @@ export default function AboutPage() {
         setContent(defaultContent);
       }
     }
+
+    const storedAvatar = localStorage.getItem("aboutPageAvatar");
+    if (storedAvatar) {
+        setAboutPageAvatar(storedAvatar);
+    }
+
   }, []);
 
   const highlights = [
@@ -125,7 +132,7 @@ export default function AboutPage() {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <Avatar>
-                      <AvatarImage src="https://placehold.co/40x40.png" alt="Developer" data-ai-hint="developer portrait" />
+                      <AvatarImage src={aboutPageAvatar} alt="Developer" data-ai-hint="developer portrait" />
                       <AvatarFallback>D</AvatarFallback>
                     </Avatar>
                     <div>
@@ -148,5 +155,3 @@ export default function AboutPage() {
     </div>
   );
 }
-
-  
