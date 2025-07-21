@@ -67,7 +67,7 @@ export default function SurveyPage() {
 
     body += '\nRegards,\nNexaAI Survey System';
 
-    const subject = "NexaAI Survey Feedback";
+    const subject = "Feedback";
     const mailtoLink = `mailto:ibefikra1@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     
     try {
