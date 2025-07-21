@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { User, Settings, Palette, Link as LinkIcon, FileText } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 
 const navLinks = [
@@ -24,8 +23,12 @@ interface AdminSidebarProps {
 export function AdminSidebar({ isOpen }: AdminSidebarProps) {
     const pathname = usePathname();
 
+    if (!isOpen) {
+        return null;
+    }
+
     return (
-        <aside className={cn("flex-shrink-0 bg-card border-r h-screen sticky top-0 flex flex-col transition-all duration-300", isOpen ? "w-60" : "w-20")}>
+        <aside className={cn("flex-shrink-0 bg-card border-r h-screen sticky top-0 flex flex-col transition-all duration-300 w-60")}>
             <div className="flex items-center gap-2 mb-6 p-4">
                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 218 300" preserveAspectRatio="xMidYMid meet">
                     <defs>
@@ -42,31 +45,20 @@ export function AdminSidebar({ isOpen }: AdminSidebarProps) {
                         <path d="M622 983 c-85 -17 -105 -163 -27 -205 71 -39 144 4 152 89 5 45 2 54 -23 81 -30 32 -62 43 -102 35z m63 -29 c25 -10 48 -62 40 -93 -10 -39 -44 -71 -77 -71 -41 0 -78 40 -78 83 0 65 55 104 115 81z"/>
                     </g>
                 </svg>
-                <h2 className={cn("text-xl font-semibold text-foreground", !isOpen && "hidden")}>Admin</h2>
+                <h2 className="text-xl font-semibold text-foreground">Admin</h2>
             </div>
             <nav className="flex flex-col gap-2 px-4">
-                 <TooltipProvider>
-                    {navLinks.map(({ href, label, icon: Icon }) => (
-                         <Tooltip key={href} delayDuration={0}>
-                            <TooltipTrigger asChild>
-                                <Link href={href} passHref>
-                                    <Button
-                                        variant={pathname === href ? "secondary" : "ghost"}
-                                        className={cn("w-full", isOpen ? "justify-start" : "justify-center")}
-                                    >
-                                        <Icon className={cn("h-5 w-5", isOpen && "mr-2")} />
-                                        <span className={cn(!isOpen && "sr-only")}>{label}</span>
-                                    </Button>
-                                </Link>
-                            </TooltipTrigger>
-                            {!isOpen && (
-                                <TooltipContent side="right">
-                                    {label}
-                                </TooltipContent>
-                            )}
-                         </Tooltip>
-                    ))}
-                 </TooltipProvider>
+                {navLinks.map(({ href, label, icon: Icon }) => (
+                     <Link key={href} href={href} passHref>
+                        <Button
+                            variant={pathname === href ? "secondary" : "ghost"}
+                            className="w-full justify-start"
+                        >
+                            <Icon className="h-5 w-5 mr-2" />
+                            <span>{label}</span>
+                        </Button>
+                    </Link>
+                ))}
             </nav>
         </aside>
     );
