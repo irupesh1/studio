@@ -71,9 +71,9 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         <div ref={viewportRef} className="h-full">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {messages.length === 0 && !isLoading ? (
-              <div className="text-center mt-[20vh] text-foreground">
-                  <h1 className="text-4xl font-bold">NexaAI Chat</h1>
-                  <p className="mt-2 text-muted-foreground">How can I help you today?</p>
+              <div className="text-center mt-[20vh]">
+                  <h1 className="text-5xl font-bold text-primary">Nexa AI</h1>
+                  <p className="mt-4 text-lg text-muted-foreground">Your intelligent assistant for everything.</p>
               </div>
           ) : (
             <div className="space-y-8">
