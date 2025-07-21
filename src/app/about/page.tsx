@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 
 export default function AboutPage() {
   const highlights = [
@@ -46,6 +47,7 @@ export default function AboutPage() {
               <CardDescription className="mt-1">
                 Your smart, intuitive, and evolving AI companion.
               </CardDescription>
+              <Badge variant="secondary" className="mt-2">NexaAI Learner v1.0</Badge>
             </div>
           </CardHeader>
           <CardContent className="p-6 md:p-8 space-y-8">
