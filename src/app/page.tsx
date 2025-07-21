@@ -1,19 +1,39 @@
 import { ChatInterface } from "@/components/chat-interface";
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarTrigger,
+  SidebarHeader,
+  SidebarContent,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Bot, MessageSquarePlus } from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 bg-background">
-      <div className="w-full h-[calc(100vh-2rem)] sm:h-[calc(100vh-4rem)] flex flex-col items-center">
-        <header className="mb-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary tracking-tight font-headline">
-            NexaAI Chat
-          </h1>
-          <p className="text-muted-foreground mt-2 text-lg">
-            Your intelligent conversational partner.
-          </p>
-        </header>
-        <ChatInterface />
-      </div>
-    </main>
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+          <Button variant="outline" className="w-full justify-start">
+            <MessageSquarePlus className="mr-2" />
+            New Chat
+          </Button>
+        </SidebarHeader>
+        <SidebarContent>
+          {/* Chat history can be listed here */}
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <div className="flex flex-col h-screen">
+          <header className="p-2 border-b md:hidden">
+            <SidebarTrigger />
+          </header>
+          <main className="flex-1 overflow-y-auto">
+            <ChatInterface />
+          </main>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
