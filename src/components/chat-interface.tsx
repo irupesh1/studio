@@ -53,46 +53,11 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     });
   };
 
-  const handlePlayAudio = async (message: Message) => {
-      if (activeAudio === message.id && audioRef.current) {
-          if (audioRef.current.paused) {
-              audioRef.current.play();
-          } else {
-              audioRef.current.pause();
-          }
-          return;
-      }
-      
-      if (message.audioDataUri) {
-          playAudioData(message.id, message.audioDataUri);
-          return;
-      }
-
-      setAudioLoading(message.id);
-      const audioDataUri = await getAudioForText(message.content);
-      setAudioLoading(null);
-      if (audioDataUri) {
-          setMessages(prev => prev.map(m => m.id === message.id ? { ...m, audioDataUri } : m));
-          playAudioData(message.id, audioDataUri);
-      } else {
-          toast({ variant: 'destructive', title: 'Error', description: 'Failed to generate audio.' });
-      }
-  };
-
-  const playAudioData = (messageId: string, audioDataUri: string) => {
-      if (audioRef.current) {
-          audioRef.current.pause();
-      }
-      const newAudio = new Audio(audioDataUri);
-      newAudio.onplay = () => setActiveAudio(messageId);
-      newAudio.onpause = () => setActiveAudio(null);
-      newAudio.onended = () => setActiveAudio(null);
-      newAudio.onerror = () => {
-          toast({ variant: 'destructive', title: 'Error', description: 'Failed to play audio.' });
-          setActiveAudio(null);
-      };
-      audioRef.current = newAudio;
-      audioRef.current.play();
+  const handlePlayAudio = (message: Message) => {
+    toast({
+      title: 'Coming Soon',
+      description: 'TTS feature is coming soon.',
+    });
   };
 
   const handleRegenerate = async () => {
@@ -135,7 +100,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     try {
       const aiMessage = await sendMessage(newMessages);
       setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
+    } catch (error)
+{
       console.error(error);
       toast({
         variant: 'destructive',
@@ -199,12 +165,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                           </button>
                           <button aria-label="Like response"><ThumbsUp className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           <button aria-label="Dislike response"><ThumbsDown className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
-                          <button onClick={() => handlePlayAudio(message)} disabled={!!audioLoading} className="disabled:opacity-50" aria-label="Play audio">
-                            {audioLoading === message.id ? (
-                                <Loader2 className="w-4 h-4 animate-spin"/>
-                            ) : (
-                                <Volume2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
-                            )}
+                          <button onClick={() => handlePlayAudio(message)} className="disabled:opacity-50" aria-label="Play audio">
+                            <Volume2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
                           </button>
                            <button aria-label="Share response"><Share2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           {index === messages.length - 1 && !isLoading && (
