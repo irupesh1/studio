@@ -12,20 +12,14 @@ import { Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 
-const initialMessage: Message = {
-  id: 'initial-message',
-  role: 'assistant',
-  content: "Hello there! 👋 How can I help you today? 😊",
-};
-
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([initialMessage]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [feedbackPromptShown, setFeedbackPromptShown] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!feedbackPromptShown) {
+    if (!feedbackPromptShown && messages.length > 0) { // Only show feedback prompt after conversation starts
       const timer = setTimeout(() => {
         toast({
           title: "Enjoying NexaAI?",
@@ -43,10 +37,11 @@ export default function Home() {
 
       return () => clearTimeout(timer);
     }
-  }, [feedbackPromptShown, toast]);
+  }, [messages, feedbackPromptShown, toast]);
 
   const startNewChat = () => {
-    setMessages([initialMessage]);
+    setMessages([]);
+    setFeedbackPromptShown(false);
     setIsSidebarOpen(false); 
   };
 
