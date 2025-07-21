@@ -39,11 +39,10 @@ export async function regenerateResponse(history: Message[]): Promise<Message> {
     if (userMessages.length === 0) {
       throw new Error('No user message to regenerate.');
     }
-
-    const lastUserMessage = userMessages[userMessages.length - 1];
     
-    // History without the last assistant message
-    const historyForRegeneration = history.slice(0, history.findIndex(m => m.id === lastUserMessage.id) + 1);
+    // We only need the history up to the last user message to get a new response.
+    const lastUserMessageIndex = history.map(m => m.role).lastIndexOf('user');
+    const historyForRegeneration = history.slice(0, lastUserMessageIndex + 1);
 
     const { response } = await generateResponse({
       history: historyForRegeneration.map(({id, audioDataUri, ...rest}) => rest),
