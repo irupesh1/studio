@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect, type FormEvent } from 'react';
@@ -66,9 +67,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   
   return (
     <div className="flex flex-col h-full">
-       <header className="absolute top-4 right-4">
-        <ThemeToggle />
-      </header>
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <div ref={viewportRef} className="h-full">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
