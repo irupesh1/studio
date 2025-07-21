@@ -1,4 +1,7 @@
 
+"use client";
+
+import { useEffect, useState } from 'react';
 import { ArrowLeft, BrainCircuit, Feather, Rocket, ShieldCheck, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -7,27 +10,58 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
+const defaultContent = {
+  title: "About NexaAI",
+  description: "Your smart, intuitive, and evolving AI companion.",
+  uniqueSectionTitle: "What Makes Nexa AI Unique?",
+  uniqueSectionText: "Nexa AI is not just another chatbot—it’s a smart, intuitive, and evolving AI companion designed to understand, learn, and grow with each interaction. What sets Nexa AI apart is its user-centric intelligence, deeply rooted in real-time responsiveness, privacy-first architecture, and adaptive learning.",
+  highlight1Title: "Locally Trained for Privacy",
+  highlight1Text: "Nexa AI respects user privacy by storing past interactions only on your local device. No data is sent to servers—your information vanishes as soon as you refresh the page.",
+  highlight2Title: "Designed by a Developer, Not a Corporation",
+  highlight2Text: "Unlike mass-produced AI platforms, Nexa AI is thoughtfully crafted by a 3rd-year B.Tech student, Rupesh, with a deep focus on usability, innovation, and ethical AI design.",
+  highlight3Title: "Minimalist and Modern Interface",
+  highlight3Text: "The UI is fast, responsive, and visually elegant—built to simplify conversations while delivering powerful AI performance behind the scenes.",
+  highlight4Title: "Evolving with Every Interaction",
+  highlight4Text: "Nexa AI observes and adapts within sessions, offering smarter replies and better context without requiring complex setup or user data collection.",
+  quote: "“NexaAI was built to prove that one passionate developer can create something powerful, ethical, and user-friendly without a billion-dollar company behind them.”",
+};
+
+
 export default function AboutPage() {
+  const [content, setContent] = useState(defaultContent);
+
+  useEffect(() => {
+    const storedContent = localStorage.getItem("aboutPageContent");
+    if (storedContent) {
+      try {
+        setContent(JSON.parse(storedContent));
+      } catch (e) {
+        console.error("Failed to parse about page content from localStorage", e);
+        setContent(defaultContent);
+      }
+    }
+  }, []);
+
   const highlights = [
     {
       icon: <ShieldCheck className="h-6 w-6 text-primary" />,
-      title: "Locally Trained for Privacy",
-      text: "Nexa AI respects user privacy by storing past interactions only on your local device. No data is sent to servers—your information vanishes as soon as you refresh the page.",
+      title: content.highlight1Title,
+      text: content.highlight1Text,
     },
     {
       icon: <Feather className="h-6 w-6 text-primary" />,
-      title: "Designed by a Developer, Not a Corporation",
-      text: "Unlike mass-produced AI platforms, Nexa AI is thoughtfully crafted by a 3rd-year B.Tech student, Rupesh, with a deep focus on usability, innovation, and ethical AI design.",
+      title: content.highlight2Title,
+      text: content.highlight2Text,
     },
     {
       icon: <Zap className="h-6 w-6 text-primary" />,
-      title: "Minimalist and Modern Interface",
-      text: "The UI is fast, responsive, and visually elegant—built to simplify conversations while delivering powerful AI performance behind the scenes.",
+      title: content.highlight3Title,
+      text: content.highlight3Text,
     },
     {
       icon: <BrainCircuit className="h-6 w-6 text-primary" />,
-      title: "Evolving with Every Interaction",
-      text: "Nexa AI observes and adapts within sessions, offering smarter replies and better context without requiring complex setup or user data collection.",
+      title: content.highlight4Title,
+      text: content.highlight4Text,
     },
   ];
 
@@ -43,9 +77,9 @@ export default function AboutPage() {
               </Button>
             </Link>
             <div>
-              <CardTitle className="text-2xl font-bold tracking-tight">About NexaAI</CardTitle>
+              <CardTitle className="text-2xl font-bold tracking-tight">{content.title}</CardTitle>
               <CardDescription className="mt-1">
-                Your smart, intuitive, and evolving AI companion.
+                {content.description}
               </CardDescription>
               <Link href="/about/version" passHref>
                 <Badge variant="secondary" className="mt-2 cursor-pointer hover:bg-primary/10">NexaAI Learner v1.0</Badge>
@@ -54,9 +88,9 @@ export default function AboutPage() {
           </CardHeader>
           <CardContent className="p-6 md:p-8 space-y-8">
             <section>
-              <h2 className="text-xl font-semibold mb-2">What Makes Nexa AI Unique?</h2>
+              <h2 className="text-xl font-semibold mb-2">{content.uniqueSectionTitle}</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Nexa AI is not just another chatbot—it’s a smart, intuitive, and evolving AI companion designed to understand, learn, and grow with each interaction. What sets Nexa AI apart is its user-centric intelligence, deeply rooted in real-time responsiveness, privacy-first architecture, and adaptive learning.
+                {content.uniqueSectionText}
               </p>
             </section>
             
@@ -100,7 +134,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent>
                   <blockquote className="text-muted-foreground italic">
-                    “NexaAI was built to prove that one passionate developer can create something powerful, ethical, and user-friendly without a billion-dollar company behind them.”
+                    {content.quote}
                   </blockquote>
                   <CardDescription className="text-right mt-4">— Developer of NexaAI</CardDescription>
                 </CardContent>

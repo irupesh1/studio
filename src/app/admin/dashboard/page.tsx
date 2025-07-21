@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, User, MessageSquare, Palette, Link as LinkIcon, Edit, Settings, Trash2 } from "lucide-react";
+import { LogOut, User, MessageSquare, Palette, Link as LinkIcon, Edit, Settings, Trash2, FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
@@ -63,6 +63,46 @@ const themeCustomizationSchema = z.object({
     sendButtonIcon: z.string(),
 });
 type ThemeCustomizationValues = z.infer<typeof themeCustomizationSchema>;
+
+const aboutPageSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  uniqueSectionTitle: z.string(),
+  uniqueSectionText: z.string(),
+  highlight1Title: z.string(),
+  highlight1Text: z.string(),
+  highlight2Title: z.string(),
+  highlight2Text: z.string(),
+  highlight3Title: z.string(),
+  highlight3Text: z.string(),
+  highlight4Title: z.string(),
+  highlight4Text: z.string(),
+  quote: z.string(),
+});
+type AboutPageValues = z.infer<typeof aboutPageSchema>;
+
+const versionPageSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    version: z.string(),
+    status: z.string(),
+    quote: z.string(),
+    philosophyText: z.string(),
+    coreFeatures: z.string(),
+    upcomingFeatures: z.string(),
+});
+type VersionPageValues = z.infer<typeof versionPageSchema>;
+
+const privacyPageSchema = z.object({
+    title: z.string(),
+    effectiveDate: z.string(),
+    intro: z.string(),
+    infoCollection: z.string(),
+    dataUsage: z.string(),
+    localStorage: z.string(),
+    contactEmail: z.string(),
+});
+type PrivacyPageValues = z.infer<typeof privacyPageSchema>;
 
 
 export default function AdminDashboardPage() {
@@ -178,6 +218,66 @@ export default function AdminDashboardPage() {
       }
   });
 
+  const aboutPageForm = useForm<AboutPageValues>({
+    resolver: zodResolver(aboutPageSchema),
+    effects: (form) => {
+      const storedContent = localStorage.getItem("aboutPageContent");
+      if(storedContent) {
+        form.reset(JSON.parse(storedContent));
+      } else {
+        form.reset({
+            title: "About NexaAI",
+            description: "Your smart, intuitive, and evolving AI companion.",
+            uniqueSectionTitle: "What Makes Nexa AI Unique?",
+            uniqueSectionText: "Nexa AI is not just another chatbot—it’s a smart, intuitive, and evolving AI companion designed to understand, learn, and grow with each interaction. What sets Nexa AI apart is its user-centric intelligence, deeply rooted in real-time responsiveness, privacy-first architecture, and adaptive learning.",
+            highlight1Title: "Locally Trained for Privacy",
+            highlight1Text: "Nexa AI respects user privacy by storing past interactions only on your local device. No data is sent to servers—your information vanishes as soon as you refresh the page.",
+            highlight2Title: "Designed by a Developer, Not a Corporation",
+            highlight2Text: "Unlike mass-produced AI platforms, Nexa AI is thoughtfully crafted by a 3rd-year B.Tech student, Rupesh, with a deep focus on usability, innovation, and ethical AI design.",
+            highlight3Title: "Minimalist and Modern Interface",
+            highlight3Text: "The UI is fast, responsive, and visually elegant—built to simplify conversations while delivering powerful AI performance behind the scenes.",
+            highlight4Title: "Evolving with Every Interaction",
+            highlight4Text: "Nexa AI observes and adapts within sessions, offering smarter replies and better context without requiring complex setup or user data collection.",
+            quote: "“NexaAI was built to prove that one passionate developer can create something powerful, ethical, and user-friendly without a billion-dollar company behind them.”",
+        });
+      }
+    }
+  });
+
+    const versionPageForm = useForm<VersionPageValues>({
+        resolver: zodResolver(versionPageSchema),
+        effects: (form) => {
+            const stored = localStorage.getItem("versionPageContent");
+            if(stored) form.reset(JSON.parse(stored));
+            else form.reset({
+                title: "Version Details",
+                description: "Information about NexaAI Learner v1.0",
+                version: "NexaAI Learner v1.0",
+                status: "Active | Learning Mode Enabled",
+                quote: "“This is the foundation version of NexaAI — built to learn, improve, and evolve through every user interaction. Fast, lightweight, and focused on understanding you better with each session.”",
+                philosophyText: "The beginning of NexaAI’s intelligence journey\nFocus on local session learning and privacy\nA foundation for future updates like memory, voice input, and intent detection\nA commitment to growing through user feedback and real-world use",
+                coreFeatures: "Clean, responsive chat interface\nLocal storage for private chat history\nFast and real-time user interaction\nMultilingual support (EN, HI, UR)\nBasic adaptive learning in session",
+                upcomingFeatures: "Session memory\nVoice input\nEmotional tone detection"
+            })
+        }
+    });
+
+    const privacyPageForm = useForm<PrivacyPageValues>({
+        resolver: zodResolver(privacyPageSchema),
+        effects: (form) => {
+            const stored = localStorage.getItem("privacyPageContent");
+            if(stored) form.reset(JSON.parse(stored));
+            else form.reset({
+                title: "Privacy Policy",
+                effectiveDate: "October 17, 2023",
+                intro: "Welcome to NexaAI. Your privacy is important to us. This Privacy Policy outlines how we collect, use, store, and protect your data when you interact with our services through the website.",
+                infoCollection: "We are committed to minimal data collection to protect your privacy. Here's what we collect:\n- **User Conversations:** We temporarily store your past chat interactions only on your local device storage (localStorage).\n- **Technical Information:** To enhance your experience, we may collect non-personal data such as browser type, device type, operating system, and usage analytics through anonymized tools.",
+                dataUsage: "Your data is used for the following purposes:\n- **Training NexaAI Locally:** Your previous messages are stored temporarily to enhance conversation continuity and context understanding. This helps NexaAI perform better during your current session.\n- **Improved User Experience:** We use temporary local data to personalize responses and remember preferences during the same session.",
+                localStorage: "Your data is not sent to any server or shared with third parties. Data is stored only in your browser’s local storage and is used exclusively by NexaAI on your device. Once you refresh, close, or leave the page, all stored conversations are automatically deleted.",
+                contactEmail: "ibefikra1@gmail.com"
+            })
+        }
+    });
 
   const handleCredentialsSubmit = (data: CredentialsFormValues) => {
     localStorage.setItem("adminUsername", data.username);
@@ -206,7 +306,6 @@ export default function AdminDashboardPage() {
   const handleThemeSubmit = (data: ThemeCustomizationValues) => {
       localStorage.setItem("customTheme", JSON.stringify(data));
       toast({ title: "Success", description: "Theme updated. Refresh to see changes." });
-      // Optionally trigger a custom event to update live
       window.dispatchEvent(new Event('theme-updated'));
   }
   
@@ -227,6 +326,20 @@ export default function AdminDashboardPage() {
     window.dispatchEvent(new Event('theme-updated'));
   };
 
+    const handleAboutPageSubmit = (data: AboutPageValues) => {
+        localStorage.setItem("aboutPageContent", JSON.stringify(data));
+        toast({ title: "Success", description: "About Page content updated." });
+    };
+
+    const handleVersionPageSubmit = (data: VersionPageValues) => {
+        localStorage.setItem("versionPageContent", JSON.stringify(data));
+        toast({ title: "Success", description: "Version Page content updated." });
+    };
+
+    const handlePrivacyPageSubmit = (data: PrivacyPageValues) => {
+        localStorage.setItem("privacyPageContent", JSON.stringify(data));
+        toast({ title: "Success", description: "Privacy Policy content updated." });
+    };
 
   const handleLogout = () => {
     localStorage.removeItem("isAdminAuthenticated");
@@ -253,7 +366,6 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="grid gap-8">
-            {/* Credentials Card */}
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><User /> Admin Credentials</CardTitle>
@@ -262,28 +374,8 @@ export default function AdminDashboardPage() {
                 <CardContent>
                     <Form {...credentialsForm}>
                         <form onSubmit={credentialsForm.handleSubmit(handleCredentialsSubmit)} className="space-y-4">
-                            <FormField
-                                control={credentialsForm.control}
-                                name="username"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Username</FormLabel>
-                                    <FormControl><Input {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={credentialsForm.control}
-                                name="password"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl><Input type="password" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
+                            <FormField control={credentialsForm.control} name="username" render={({ field }) => (<FormItem><FormLabel>Username</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField control={credentialsForm.control} name="password" render={({ field }) => (<FormItem><FormLabel>Password</FormLabel><FormControl><Input type="password" {...field} /></FormControl><FormMessage /></FormItem>)} />
                             <Button type="submit">Update Credentials</Button>
                         </form>
                     </Form>
@@ -300,84 +392,21 @@ export default function AdminDashboardPage() {
                         <Form {...personalizationForm}>
                             <form onSubmit={personalizationForm.handleSubmit(handlePersonalizationSubmit)} className="space-y-4">
                                 <h3 className="font-semibold text-lg flex items-center gap-2"><MessageSquare/> Welcome Content</h3>
-                                <FormField
-                                    control={personalizationForm.control}
-                                    name="title"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Welcome Title</FormLabel>
-                                        <FormControl><Input {...field} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={personalizationForm.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Welcome Description</FormLabel>
-                                        <FormControl><Textarea {...field} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
+                                <FormField control={personalizationForm.control} name="title" render={({ field }) => (<FormItem><FormLabel>Welcome Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={personalizationForm.control} name="description" render={({ field }) => (<FormItem><FormLabel>Welcome Description</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)} />
                                 <Button type="submit">Update Content</Button>
                             </form>
                         </Form>
                     </div>
-
                     <Separator/>
-
                     <div>
                         <Form {...appearanceForm}>
                             <form onSubmit={appearanceForm.handleSubmit(handleAppearanceSubmit)} className="space-y-4">
                                 <h3 className="font-semibold text-lg flex items-center gap-2"><Palette/> Appearance</h3>
                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    <FormField
-                                        control={appearanceForm.control}
-                                        name="fontFamily"
-                                        render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Font Family</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                <SelectValue placeholder="Select a font" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Inter">Inter</SelectItem>
-                                                <SelectItem value="Roboto">Roboto</SelectItem>
-                                                <SelectItem value="Lato">Lato</SelectItem>
-                                            </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={appearanceForm.control}
-                                        name="titleColor"
-                                        render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Welcome Title Color</FormLabel>
-                                            <FormControl><Input type="color" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={appearanceForm.control}
-                                        name="descriptionColor"
-                                        render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Welcome Description Color</FormLabel>
-                                            <FormControl><Input type="color" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                        )}
-                                    />
+                                    <FormField control={appearanceForm.control} name="fontFamily" render={({ field }) => (<FormItem><FormLabel>Font Family</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select a font" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Inter">Inter</SelectItem><SelectItem value="Roboto">Roboto</SelectItem><SelectItem value="Lato">Lato</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
+                                    <FormField control={appearanceForm.control} name="titleColor" render={({ field }) => (<FormItem><FormLabel>Welcome Title Color</FormLabel><FormControl><Input type="color" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                    <FormField control={appearanceForm.control} name="descriptionColor" render={({ field }) => (<FormItem><FormLabel>Welcome Description Color</FormLabel><FormControl><Input type="color" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                 </div>
                                 <Button type="submit">Update Appearance</Button>
                             </form>
@@ -404,28 +433,12 @@ export default function AdminDashboardPage() {
                                 <FormField control={themeForm.control} name="sendButtonBg" render={({ field }) => (<FormItem><FormLabel>Send Button BG</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
                                 <FormField control={themeForm.control} name="sendButtonIcon" render={({ field }) => (<FormItem><FormLabel>Send Button Icon</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
                             </div>
-                            <FormField
-                                control={themeForm.control}
-                                name="inputPlaceholder"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Input Placeholder Text</FormLabel>
-                                        <FormControl><Input placeholder="Ask anything..." {...field} /></FormControl>
-                                    </FormItem>
-                                )}
-                            />
-                            <div className="flex items-center gap-4">
-                                <Button type="submit">Save Theme</Button>
-                            </div>
+                            <FormField control={themeForm.control} name="inputPlaceholder" render={({ field }) => ( <FormItem><FormLabel>Input Placeholder Text</FormLabel><FormControl><Input placeholder="Ask anything..." {...field} /></FormControl></FormItem>)} />
+                            <div className="flex items-center gap-4"><Button type="submit">Save Theme</Button></div>
                         </form>
                     </Form>
                 </CardContent>
-                <CardFooter>
-                    <Button variant="destructive" onClick={handleResetTheme}>
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Reset Theme to Default
-                    </Button>
-                </CardFooter>
+                <CardFooter><Button variant="destructive" onClick={handleResetTheme}><Trash2 className="mr-2 h-4 w-4" />Reset Theme to Default</Button></CardFooter>
             </Card>
 
             <Card>
@@ -439,91 +452,16 @@ export default function AdminDashboardPage() {
                         <Accordion type="multiple" className="w-full">
                            {Array.from({ length: 4 }).map((_, index) => (
                              <AccordionItem key={index} value={`item-${index}`}>
-                                <AccordionTrigger>
-                                    <h4 className="font-semibold">Button {index + 1}</h4>
-                                </AccordionTrigger>
+                                <AccordionTrigger><h4 className="font-semibold">Button {index + 1}</h4></AccordionTrigger>
                                 <AccordionContent className="space-y-4 pt-4">
-                                     <FormField
-                                        control={shortcutsForm.control}
-                                        name={`shortcuts.${index}.enabled`}
-                                        render={({ field }) => (
-                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                                                <div className="space-y-0.5">
-                                                    <FormLabel>Enable Button</FormLabel>
-                                                    <FormDescription>
-                                                        Show this button on the welcome screen.
-                                                    </FormDescription>
-                                                </div>
-                                                <FormControl>
-                                                    <Switch
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
+                                     <FormField control={shortcutsForm.control} name={`shortcuts.${index}.enabled`} render={({ field }) => (<FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"><div className="space-y-0.5"><FormLabel>Enable Button</FormLabel><FormDescription>Show this button on the welcome screen.</FormDescription></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange}/></FormControl></FormItem>)} />
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <FormField
-                                            control={shortcutsForm.control}
-                                            name={`shortcuts.${index}.text`}
-                                            render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Button Text</FormLabel>
-                                                <FormControl><Input placeholder="e.g., View Docs" {...field} /></FormControl>
-                                            </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={shortcutsForm.control}
-                                            name={`shortcuts.${index}.link`}
-                                            render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Navigation Link</FormLabel>
-                                                <FormControl><Input placeholder="https://..." {...field} /></FormControl>
-                                            </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={shortcutsForm.control}
-                                            name={`shortcuts.${index}.bgColor`}
-                                            render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Background Color</FormLabel>
-                                                <FormControl><Input type="color" {...field} /></FormControl>
-                                            </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={shortcutsForm.control}
-                                            name={`shortcuts.${index}.textColor`}
-                                            render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Text Color</FormLabel>
-                                                <FormControl><Input type="color" {...field} /></FormControl>
-                                            </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={shortcutsForm.control}
-                                            name={`shortcuts.${index}.hoverBgColor`}
-                                            render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Hover BG Color</FormLabel>
-                                                <FormControl><Input type="color" {...field} /></FormControl>
-                                            </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={shortcutsForm.control}
-                                            name={`shortcuts.${index}.hoverTextColor`}
-                                            render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Hover Text Color</FormLabel>
-                                                <FormControl><Input type="color" {...field} /></FormControl>
-                                            </FormItem>
-                                            )}
-                                        />
+                                        <FormField control={shortcutsForm.control} name={`shortcuts.${index}.text`} render={({ field }) => (<FormItem><FormLabel>Button Text</FormLabel><FormControl><Input placeholder="e.g., View Docs" {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={shortcutsForm.control} name={`shortcuts.${index}.link`} render={({ field }) => (<FormItem><FormLabel>Navigation Link</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={shortcutsForm.control} name={`shortcuts.${index}.bgColor`} render={({ field }) => (<FormItem><FormLabel>Background Color</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={shortcutsForm.control} name={`shortcuts.${index}.textColor`} render={({ field }) => (<FormItem><FormLabel>Text Color</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={shortcutsForm.control} name={`shortcuts.${index}.hoverBgColor`} render={({ field }) => (<FormItem><FormLabel>Hover BG Color</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={shortcutsForm.control} name={`shortcuts.${index}.hoverTextColor`} render={({ field }) => (<FormItem><FormLabel>Hover Text Color</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
                                     </div>
                                 </AccordionContent>
                              </AccordionItem>
@@ -532,6 +470,75 @@ export default function AdminDashboardPage() {
                         <Button type="submit">Update Shortcut Buttons</Button>
                      </form>
                    </Form>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><FileText/> Page Content Editor</CardTitle>
+                    <CardDescription>Edit the content of your informational pages.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Accordion type="multiple" className="w-full">
+                        <AccordionItem value="about-page">
+                            <AccordionTrigger><h4 className="font-semibold">About Page</h4></AccordionTrigger>
+                            <AccordionContent className="space-y-4 pt-4">
+                                <Form {...aboutPageForm}>
+                                    <form onSubmit={aboutPageForm.handleSubmit(handleAboutPageSubmit)} className="space-y-4">
+                                        <FormField control={aboutPageForm.control} name="title" render={({ field }) => (<FormItem><FormLabel>Page Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="description" render={({ field }) => (<FormItem><FormLabel>Page Description</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="uniqueSectionTitle" render={({ field }) => (<FormItem><FormLabel>Unique Section Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="uniqueSectionText" render={({ field }) => (<FormItem><FormLabel>Unique Section Text</FormLabel><FormControl><Textarea rows={4} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight1Title" render={({ field }) => (<FormItem><FormLabel>Highlight 1 Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight1Text" render={({ field }) => (<FormItem><FormLabel>Highlight 1 Text</FormLabel><FormControl><Textarea rows={2} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight2Title" render={({ field }) => (<FormItem><FormLabel>Highlight 2 Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight2Text" render={({ field }) => (<FormItem><FormLabel>Highlight 2 Text</FormLabel><FormControl><Textarea rows={2} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight3Title" render={({ field }) => (<FormItem><FormLabel>Highlight 3 Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight3Text" render={({ field }) => (<FormItem><FormLabel>Highlight 3 Text</FormLabel><FormControl><Textarea rows={2} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight4Title" render={({ field }) => (<FormItem><FormLabel>Highlight 4 Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="highlight4Text" render={({ field }) => (<FormItem><FormLabel>Highlight 4 Text</FormLabel><FormControl><Textarea rows={2} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={aboutPageForm.control} name="quote" render={({ field }) => (<FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl></FormItem>)} />
+                                        <Button type="submit">Update About Page</Button>
+                                    </form>
+                                </Form>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="version-page">
+                            <AccordionTrigger><h4 className="font-semibold">Version Details Page</h4></AccordionTrigger>
+                            <AccordionContent className="space-y-4 pt-4">
+                                <Form {...versionPageForm}>
+                                    <form onSubmit={versionPageForm.handleSubmit(handleVersionPageSubmit)} className="space-y-4">
+                                        <FormField control={versionPageForm.control} name="title" render={({ field }) => (<FormItem><FormLabel>Page Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={versionPageForm.control} name="description" render={({ field }) => (<FormItem><FormLabel>Page Description</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={versionPageForm.control} name="version" render={({ field }) => (<FormItem><FormLabel>Version Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={versionPageForm.control} name="status" render={({ field }) => (<FormItem><FormLabel>Version Status</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={versionPageForm.control} name="quote" render={({ field }) => (<FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={versionPageForm.control} name="philosophyText" render={({ field }) => (<FormItem><FormLabel>Philosophy Points (one per line)</FormLabel><FormControl><Textarea rows={4} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={versionPageForm.control} name="coreFeatures" render={({ field }) => (<FormItem><FormLabel>Core Features (one per line)</FormLabel><FormControl><Textarea rows={5} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={versionPageForm.control} name="upcomingFeatures" render={({ field }) => (<FormItem><FormLabel>Upcoming Features (one per line)</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl></FormItem>)} />
+                                        <Button type="submit">Update Version Page</Button>
+                                    </form>
+                                </Form>
+                            </AccordionContent>
+                        </AccordionItem>
+                         <AccordionItem value="privacy-page">
+                            <AccordionTrigger><h4 className="font-semibold">Privacy Policy Page</h4></AccordionTrigger>
+                            <AccordionContent className="space-y-4 pt-4">
+                                <Form {...privacyPageForm}>
+                                    <form onSubmit={privacyPageForm.handleSubmit(handlePrivacyPageSubmit)} className="space-y-4">
+                                        <FormField control={privacyPageForm.control} name="title" render={({ field }) => (<FormItem><FormLabel>Page Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={privacyPageForm.control} name="effectiveDate" render={({ field }) => (<FormItem><FormLabel>Effective Date</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={privacyPageForm.control} name="intro" render={({ field }) => (<FormItem><FormLabel>Introduction</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={privacyPageForm.control} name="infoCollection" render={({ field }) => (<FormItem><FormLabel>Information Collection</FormLabel><FormControl><Textarea rows={4} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={privacyPageForm.control} name="dataUsage" render={({ field }) => (<FormItem><FormLabel>Data Usage</FormLabel><FormControl><Textarea rows={4} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={privacyPageForm.control} name="localStorage" render={({ field }) => (<FormItem><FormLabel>Local Storage Policy</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={privacyPageForm.control} name="contactEmail" render={({ field }) => (<FormItem><FormLabel>Contact Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl></FormItem>)} />
+                                        <Button type="submit">Update Privacy Policy</Button>
+                                    </form>
+                                </Form>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </CardContent>
             </Card>
         </div>
