@@ -4,10 +4,9 @@ import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { sendMessage } from '@/app/actions';
 import type { Message } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, Loader2, Square, PlayCircle } from 'lucide-react';
+import { Send, Bot, Loader2, Square, ThumbsUp, ThumbsDown, RefreshCw, ClipboardCopy, Share2, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -121,74 +120,81 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                   <h1 className="text-2xl font-bold mt-4">How can I help you today?</h1>
               </div>
           ) : (
-              <div className="space-y-8">
+            <div className="space-y-6">
               {messages.map((message) => (
-                  <div
+                <div
                   key={message.id}
                   className={cn(
-                      'flex items-start gap-4 animate-in fade-in zoom-in-95'
+                    'flex items-start gap-4 animate-in fade-in zoom-in-95',
+                    message.role === 'user' && 'justify-end'
                   )}
+                >
+                  <div
+                    className={cn(
+                      'flex-1 max-w-lg',
+                      message.role === 'user'
+                        ? 'bg-muted/60 rounded-2xl p-3'
+                        : ''
+                    )}
                   >
-                  {message.role === 'assistant' ? (
-                      <Avatar className="h-8 w-8 border shrink-0">
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                          <Bot className="h-5 w-5" />
-                      </AvatarFallback>
-                      </Avatar>
-                  ) : (
-                      <Avatar className="h-8 w-8 border shrink-0">
-                      <AvatarFallback>
-                          <User className="h-5 w-5" />
-                      </AvatarFallback>
-                      </Avatar>
-                  )}
-                  <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <p className="font-semibold text-sm">
-                          {message.role === 'assistant' ? 'NexaAI' : 'You'}
-                        </p>
-                        {message.role === 'assistant' && message.audioUrl && (
-                           <Button
+                    <div className="prose text-[13px] max-w-none text-foreground whitespace-pre-wrap">
+                      {message.content}
+                    </div>
+
+                    {message.role === 'assistant' && (
+                      <div className="flex items-center gap-2 mt-3 text-muted-foreground">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => navigator.clipboard.writeText(message.content)}
+                        >
+                          <ClipboardCopy className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                          <ThumbsUp className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                          <ThumbsDown className="h-4 w-4" />
+                        </Button>
+                        {message.audioUrl && (
+                          <Button
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7"
                             onClick={() => handlePlayAudio(message)}
                           >
-                            <PlayCircle className={cn("h-5 w-5", playingMessageId === message.id ? "text-primary" : "")} />
+                            <Volume2 className={cn("h-4 w-4", playingMessageId === message.id ? "text-primary" : "")} />
                           </Button>
                         )}
+                         <Button variant="ghost" size="icon" className="h-7 w-7">
+                          <Share2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                          <RefreshCw className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <div className="prose text-[13px] max-w-none text-foreground whitespace-pre-wrap">
-                          {message.content}
-                      </div>
+                    )}
                   </div>
-                  </div>
+                </div>
               ))}
               {isLoading && (
-                  <div className="flex items-start gap-4 animate-in fade-in zoom-in-95">
-                  <Avatar className="h-8 w-8 border shrink-0">
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                      <Bot className="h-5 w-5" />
-                      </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                      <p className="font-semibold text-sm">NexaAI</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                      <span className="text-xs text-muted-foreground">
-                          NexaAI is thinking...
-                      </span>
-                      </div>
+                <div className="flex items-start gap-4 animate-in fade-in zoom-in-95">
+                   <div className="flex items-center space-x-2 mt-1">
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    <span className="text-xs text-muted-foreground">
+                        NexaAI is thinking...
+                    </span>
                   </div>
-                  </div>
+                </div>
               )}
-              </div>
+            </div>
           )}
           </div>
         </div>
       </ScrollArea>
 
-      <div className="w-full pb-8 pt-2 bg-background">
+      <div className="w-full pb-8 pt-2">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
               {isLoading ? (
                 <div className="flex justify-center">
@@ -208,7 +214,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                         onChange={(e) => setInput(e.target.value)}
                         onFocus={handleInitialGreeting}
                         placeholder="Ask NexaAI Anything......"
-                        className="w-full h-12 pr-14 rounded-full shadow-lg"
+                        className="w-full h-12 pr-14 rounded-full shadow-lg bg-muted/50 focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-primary"
                         disabled={isLoading}
                     />
                     <Button
