@@ -53,16 +53,6 @@ export default function Home() {
                   </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/feedback" passHref>
-                <SidebarMenuButton asChild tooltip="Feedback">
-                  <span>
-                    <Star />
-                    <span className="text-xs">Feedback</span>
-                  </span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
             <SidebarMenuItem className="flex justify-center">
                 <SidebarMenuButton
                   tooltip="About NexaAI"
