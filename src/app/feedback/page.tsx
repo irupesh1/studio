@@ -61,7 +61,7 @@ export default function FeedbackPage() {
     <div className="min-h-screen bg-muted/20 py-8 px-4">
       <div className="container mx-auto max-w-2xl">
         <Card className="overflow-hidden shadow-lg rounded-xl">
-          <CardHeader className="flex flex-row items-center gap-4 p-6 bg-card">
+          <CardHeader className="flex flex-row items-center gap-4 p-4 bg-card">
             <Link href="/" passHref>
               <Button variant="outline" size="icon" className="rounded-full h-8 w-8">
                 <ArrowLeft className="h-4 w-4" />
@@ -77,7 +77,7 @@ export default function FeedbackPage() {
           </CardHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardContent className="p-6 space-y-6">
+              <CardContent className="p-4 space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -135,7 +135,7 @@ export default function FeedbackPage() {
                     </a>
                 </div>
               </CardContent>
-              <CardFooter className="p-6 pt-0 flex justify-center">
+              <CardFooter className="p-4 pt-0 flex justify-center">
                 <Button type="submit" className="w-96">Submit Feedback</Button>
               </CardFooter>
             </form>
