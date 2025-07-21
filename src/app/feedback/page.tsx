@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Separator } from "@/components/ui/separator";
@@ -29,9 +28,6 @@ const feedbackFormSchema = z.object({
   }),
   feedback: z.string().min(10, {
     message: "Feedback must be at least 10 characters.",
-  }),
-  survey: z.enum(["excellent", "good", "neutral", "bad"], {
-    required_error: "You need to select a survey option.",
   }),
 });
 
@@ -113,56 +109,12 @@ export default function FeedbackPage() {
 
                 <Separator />
                 
-                <FormField
-                  control={form.control}
-                  name="survey"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Quick Survey</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="excellent" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Excellent
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="good" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Good
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="neutral" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Neutral
-                            </FormLabel>
-                          </FormItem>
-                           <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="bad" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Bad
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-3">
+                  <FormLabel>Have more time?</FormLabel>
+                   <Button type="button" variant="outline">
+                    Quick Survey
+                  </Button>
+                </div>
               </CardContent>
               <CardFooter className="p-6 pt-0">
                 <Button type="submit">Submit Feedback</Button>
