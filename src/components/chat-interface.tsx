@@ -7,7 +7,7 @@ import type { Message } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Loader2, Bot, ClipboardCopy, ThumbsUp, ThumbsDown, Volume2, Share2, RefreshCw } from 'lucide-react';
+import { Send, Loader2, Bot, ClipboardCopy, ThumbsUp, ThumbsDown, Volume2, Share2, RefreshCw, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -150,9 +150,12 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     <Send className="h-5 w-5" />
                 </Button>
             </form>
-            <p className="text-xs text-center text-muted-foreground mt-2">
-              NexaAI can make mistakes, so double-check it
-            </p>
+            <div className="flex justify-center items-center gap-2 mt-2">
+                <p className="text-xs text-center text-muted-foreground font-bold">
+                NexaAI can make mistakes, so double-check it
+                </p>
+                <X className="w-3 h-3 text-muted-foreground cursor-pointer" />
+            </div>
           </div>
       </div>
     </div>
