@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { ChatInterface } from "@/components/chat-interface";
 import {
   SidebarProvider,
@@ -9,13 +12,20 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Bot, MessageSquarePlus } from "lucide-react";
+import type { Message } from "@/types";
 
 export default function Home() {
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const handleNewChat = () => {
+    setMessages([]);
+  };
+
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <Button variant="outline" className="w-full justify-start">
+          <Button variant="outline" className="w-full justify-start" onClick={handleNewChat}>
             <MessageSquarePlus className="mr-2" />
             New Chat
           </Button>
@@ -30,7 +40,7 @@ export default function Home() {
             <SidebarTrigger />
           </header>
           <main className="flex-1 overflow-y-auto">
-            <ChatInterface />
+            <ChatInterface messages={messages} setMessages={setMessages} />
           </main>
         </div>
       </SidebarInset>

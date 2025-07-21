@@ -7,13 +7,16 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 
-export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([]);
+interface ChatInterfaceProps {
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}
+
+export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -48,14 +51,17 @@ export function ChatInterface() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
     
-    handleInitialGreeting();
+    if (messages.length > 0 && messages[0].id === 'initial-greeting') {
+        setMessages([]);
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: input,
     };
-
+    
+    // Optimistically update the UI
     setMessages((prev) => [...prev, userMessage]);
     const currentInput = input;
     setInput('');
@@ -71,6 +77,7 @@ export function ChatInterface() {
         title: 'Error',
         description: 'Failed to get a response from the AI.',
       });
+      // Rollback on error
       setMessages(prev => prev.filter(m => m.id !== userMessage.id)); 
     } finally {
       setIsLoading(false);
