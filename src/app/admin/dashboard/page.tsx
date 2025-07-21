@@ -32,7 +32,6 @@ type PersonalizationFormValues = z.infer<typeof personalizationFormSchema>;
 
 const appearanceFormSchema = z.object({
     fontFamily: z.string(),
-    titleColor: z.string().optional(),
 });
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
@@ -123,13 +122,10 @@ export default function AdminDashboardPage() {
     resolver: zodResolver(appearanceFormSchema),
     defaultValues: {
       fontFamily: "Inter",
-      titleColor: "#000000",
     },
     effects: () => {
         const storedFont = localStorage.getItem("welcomeFontFamily");
-        const storedColor = localStorage.getItem("welcomeTitleColor");
         if(storedFont) appearanceForm.setValue("fontFamily", storedFont);
-        if(storedColor) appearanceForm.setValue("titleColor", storedColor);
     }
   });
 
@@ -153,7 +149,6 @@ export default function AdminDashboardPage() {
 
   const handleAppearanceSubmit = (data: AppearanceFormValues) => {
     localStorage.setItem("welcomeFontFamily", data.fontFamily);
-    localStorage.setItem("welcomeTitleColor", data.titleColor || '#000000');
     toast({ title: "Success", description: "Appearance settings updated." });
   };
   
@@ -286,17 +281,6 @@ export default function AdminDashboardPage() {
                                             <SelectItem value="Lato">Lato</SelectItem>
                                         </SelectContent>
                                         </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={appearanceForm.control}
-                                    name="titleColor"
-                                    render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Welcome Title Color</FormLabel>
-                                        <FormControl><Input type="color" {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                     )}

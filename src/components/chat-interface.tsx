@@ -33,7 +33,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [welcomeTitle, setWelcomeTitle] = useState("Nexa AI");
   const [welcomeDescription, setWelcomeDescription] = useState("Your intelligent assistant for everything.");
   const [welcomeFontFamily, setWelcomeFontFamily] = useState("Inter");
-  const [welcomeTitleColor, setWelcomeTitleColor] = useState("#000000");
   const [shortcutButtons, setShortcutButtons] = useState<ShortcutButton[]>([]);
   const [hoveredButton, setHoveredButton] = useState<number | null>(null);
 
@@ -46,13 +45,11 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     const savedTitle = localStorage.getItem("welcomeTitle");
     const savedDescription = localStorage.getItem("welcomeDescription");
     const savedFont = localStorage.getItem("welcomeFontFamily");
-    const savedColor = localStorage.getItem("welcomeTitleColor");
     const savedButtons = localStorage.getItem("shortcutButtons");
 
     if (savedTitle) setWelcomeTitle(savedTitle);
     if (savedDescription) setWelcomeDescription(savedDescription);
     if (savedFont) setWelcomeFontFamily(savedFont);
-    if (savedColor) setWelcomeTitleColor(savedColor);
     if (savedButtons) {
         try {
             const parsedButtons = JSON.parse(savedButtons);
@@ -166,7 +163,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {messages.length === 0 && !isLoading ? (
               <div className="text-center mt-[calc(20vh-4rem)] animate-in fade-in-50 duration-500">
-                  <h1 className="text-5xl font-bold" style={{ fontFamily: welcomeFontFamily, color: welcomeTitleColor }}>{welcomeTitle}</h1>
+                  <h1 className="text-5xl font-bold text-foreground" style={{ fontFamily: welcomeFontFamily }}>{welcomeTitle}</h1>
                   <p className="mt-4 text-lg text-muted-foreground" style={{ fontFamily: welcomeFontFamily }}>{welcomeDescription}</p>
                   <div className="mt-8 flex justify-center items-center gap-4 flex-wrap">
                     {shortcutButtons.map((btn, index) => (
@@ -307,5 +304,3 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     </div>
   );
 }
-
-    
