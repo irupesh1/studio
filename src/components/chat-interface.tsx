@@ -100,7 +100,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                         <div className="inline-block p-4 bg-primary/10 rounded-full">
                             <Bot size={40} className="text-primary" />
                         </div>
-                        <h1 className="text-3xl font-bold mt-4">How can I help you today?</h1>
+                        <h1 className="text-2xl font-bold mt-4">How can I help you today?</h1>
                     </div>
                 ) : (
                     <div className="space-y-8">
@@ -125,7 +125,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                             </Avatar>
                         )}
                         <div className="flex-1">
-                            <p className="font-semibold text-sm">
+                            <p className="font-semibold text-xs">
                             {message.role === 'assistant' ? 'NexaAI' : 'You'}
                             </p>
                             <div className="prose prose-xs max-w-none text-foreground whitespace-pre-wrap">
@@ -142,7 +142,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                            <p className="font-semibold">NexaAI</p>
+                            <p className="font-semibold text-xs">NexaAI</p>
                             <div className="flex items-center space-x-2 mt-1">
                             <Loader2 className="h-5 w-5 animate-spin text-primary" />
                             <span className="text-xs text-muted-foreground">
@@ -165,7 +165,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     <Button
                       variant="outline"
                       onClick={handleStopGenerating}
-                      className="shadow-lg"
+                      className="shadow-lg text-xs"
                     >
                       <Square className="mr-2 h-4 w-4" />
                       Stop generating

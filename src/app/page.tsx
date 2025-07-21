@@ -32,7 +32,7 @@ export default function Home() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <Button variant="outline" className="w-full justify-start" onClick={handleNewChat}>
+          <Button variant="outline" className="w-full justify-start text-xs" onClick={handleNewChat}>
             <MessageSquarePlus className="mr-2" />
             New Chat
           </Button>
@@ -48,7 +48,7 @@ export default function Home() {
                   <SidebarMenuButton asChild tooltip="Privacy Policy">
                     <span>
                         <Shield />
-                        <span>Privacy Policy</span>
+                        <span className="text-xs">Privacy Policy</span>
                     </span>
                   </SidebarMenuButton>
               </Link>
@@ -56,7 +56,7 @@ export default function Home() {
             <SidebarMenuItem>
               <SidebarMenuButton tooltip="Feedback">
                 <Star />
-                <span>Feedback</span>
+                <span className="text-xs">Feedback</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem className="flex justify-center">
@@ -64,7 +64,7 @@ export default function Home() {
                   tooltip="About NexaAI"
                   className="bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full w-auto px-4"
                 >
-                  <span>About NexaAI</span>
+                  <span className="text-xs">About NexaAI</span>
                   <ArrowUpRight />
                 </SidebarMenuButton>
             </SidebarMenuItem>
