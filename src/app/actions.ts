@@ -9,16 +9,12 @@ export async function sendMessage(message: string): Promise<Message> {
   try {
     const { sentiment } = await analyzeUserSentiment({ message });
 
-    const [responseResult, ttsResult] = await Promise.all([
-      generateResponse({
-        userInput: message,
-        sentiment: sentiment,
-      }),
-      textToSpeech(message),
-    ]);
+    const { response } = await generateResponse({
+      userInput: message,
+      sentiment: sentiment,
+    });
 
-    const { response } = responseResult;
-    const { media } = ttsResult;
+    const { media } = await textToSpeech(response);
 
     return {
       id: Date.now().toString(),
