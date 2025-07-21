@@ -6,10 +6,9 @@ import type { Message } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, Loader2, Square, ThumbsUp, ThumbsDown, RefreshCw, ClipboardCopy, Share2, Volume2 } from 'lucide-react';
+import { Send, Bot, Loader2, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { TypingAnimation } from './typing-animation';
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -22,8 +21,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
 
   const scrollToBottom = () => {
     if (viewportRef.current) {
@@ -60,7 +57,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         title: 'Error',
         description: 'Failed to get a response from the AI.',
       });
-      // Rollback the optimistic update on error
       setMessages(prev => prev.filter(m => m.id !== userMessage.id)); 
     } finally {
       setIsLoading(false);
@@ -68,34 +64,9 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   };
 
   const handleStopGenerating = () => {
-    // This is a hard-reload, which will stop any pending requests.
-    // A more sophisticated implementation might use AbortController.
     window.location.reload();
   };
   
-  const handlePlayAudio = (message: Message) => {
-    if (audioRef.current) {
-      // If the same message is clicked, pause it.
-      if (playingMessageId === message.id) {
-        audioRef.current.pause();
-        setPlayingMessageId(null);
-        return;
-      }
-      // If a different message is playing, pause it before starting the new one.
-      audioRef.current.pause();
-    }
-
-    if (message.audioUrl) {
-      const audio = new Audio(message.audioUrl);
-      audioRef.current = audio;
-      audio.play();
-      setPlayingMessageId(message.id);
-      audio.onended = () => {
-        setPlayingMessageId(null);
-      };
-    }
-  };
-
   return (
     <div className="flex flex-col h-full">
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
@@ -127,44 +98,9 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                         : ''
                     )}
                   >
-                    <div className="prose text-[13px] max-w-none text-foreground whitespace-pre-wrap">
-                      {message.role === 'assistant' ? <TypingAnimation text={message.content} /> : message.content}
+                    <div className="prose text-sm max-w-none text-foreground whitespace-pre-wrap">
+                      {message.content}
                     </div>
-
-                    {message.role === 'assistant' && (
-                      <div className="flex items-center gap-2 mt-3 text-muted-foreground">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => navigator.clipboard.writeText(message.content)}
-                        >
-                          <ClipboardCopy className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7">
-                          <ThumbsUp className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7">
-                          <ThumbsDown className="h-4 w-4" />
-                        </Button>
-                        {message.audioUrl && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => handlePlayAudio(message)}
-                          >
-                            <Volume2 className={cn("h-4 w-4", playingMessageId === message.id ? "text-primary" : "")} />
-                          </Button>
-                        )}
-                         <Button variant="ghost" size="icon" className="h-7 w-7">
-                          <Share2 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7">
-                          <RefreshCw className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
