@@ -159,7 +159,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onFocus={handleInitialGreeting}
-                        placeholder="Message NexaAI..."
+                        placeholder="Ask Nexa anything..."
                         className="w-full h-12 pr-14 rounded-full shadow-lg"
                         disabled={isLoading}
                     />
