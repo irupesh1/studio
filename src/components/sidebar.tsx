@@ -44,10 +44,12 @@ export function Sidebar({ startNewChat }: SidebarProps) {
               Privacy Policy
           </Button>
         </Link>
-        <Button variant="ghost" className="w-full justify-start">
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Feedback
-        </Button>
+        <Link href="/feedback" passHref>
+          <Button variant="ghost" className="w-full justify-start">
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Feedback
+          </Button>
+        </Link>
         <Button variant="secondary" className="w-full justify-center rounded-full">
             About NexaAI
             <ArrowUpRight className="ml-2 h-4 w-4" />
@@ -56,3 +58,5 @@ export function Sidebar({ startNewChat }: SidebarProps) {
     </aside>
   );
 }
+
+    
