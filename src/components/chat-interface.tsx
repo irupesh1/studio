@@ -133,7 +133,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     className={cn(
                       'flex-1 max-w-lg',
                        message.role === 'user'
-                        ? 'bg-primary text-primary-foreground rounded-2xl p-3'
+                        ? 'bg-muted text-foreground rounded-2xl p-3'
                         : ''
                     )}
                   >
