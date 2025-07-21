@@ -43,7 +43,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-muted/20 flex">
       <AdminSidebar isOpen={isSidebarOpen} />
-      <main className={cn("flex-1 p-4 md:p-8 overflow-y-auto transition-all duration-300", isSidebarOpen ? "md:ml-64" : "md:ml-20")}>
+      <main className={cn("flex-1 p-4 md:p-8 overflow-y-auto transition-all duration-300", isSidebarOpen ? "md:ml-60" : "md:ml-20")}>
         <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4">
                <Button variant="outline" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>

@@ -25,7 +25,7 @@ export function AdminSidebar({ isOpen }: AdminSidebarProps) {
     const pathname = usePathname();
 
     return (
-        <aside className={cn("flex-shrink-0 bg-card border-r h-screen sticky top-0 flex flex-col transition-all duration-300", isOpen ? "w-64" : "w-20")}>
+        <aside className={cn("flex-shrink-0 bg-card border-r h-screen sticky top-0 flex flex-col transition-all duration-300", isOpen ? "w-60" : "w-20")}>
             <div className="flex items-center gap-2 mb-6 p-4">
                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 218 300" preserveAspectRatio="xMidYMid meet">
                     <defs>
