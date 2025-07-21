@@ -11,9 +11,12 @@ import {
   SidebarFooter,
   SidebarSeparator,
   SidebarInset,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Bot, MessageSquarePlus } from "lucide-react";
+import { Bot, MessageSquarePlus, Shield, Star, Info } from "lucide-react";
 import type { Message } from "@/types";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -38,17 +41,26 @@ export default function Home() {
         </SidebarContent>
         <SidebarSeparator />
         <SidebarFooter>
-          <div className="flex flex-col gap-2">
-            <Button variant="ghost" className="w-full justify-start">
-              🔏 Privacy Policy
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              Feedback
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              About NexaAI
-            </Button>
-          </div>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Privacy Policy">
+                <Shield />
+                <span>Privacy Policy</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Feedback">
+                <Star />
+                <span>Feedback</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="About NexaAI">
+                <Info />
+                <span>About NexaAI</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
