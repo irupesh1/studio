@@ -54,10 +54,14 @@ export default function Home() {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Feedback">
-                <Star />
-                <span className="text-xs">Feedback</span>
-              </SidebarMenuButton>
+              <Link href="/feedback" passHref>
+                <SidebarMenuButton asChild tooltip="Feedback">
+                  <span>
+                    <Star />
+                    <span className="text-xs">Feedback</span>
+                  </span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem className="flex justify-center">
                 <SidebarMenuButton
