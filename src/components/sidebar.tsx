@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Plus, Shield, MessageSquare, Info, ArrowUpRight } from "lucide-react";
+import { Plus, Shield, MessageSquare, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 interface SidebarProps {
   startNewChat: () => void;
@@ -37,10 +38,12 @@ export function Sidebar({ startNewChat }: SidebarProps) {
         New Chat
       </Button>
       <div className="mt-auto flex flex-col gap-2">
-        <Button variant="ghost" className="w-full justify-start">
-            <Shield className="mr-2 h-4 w-4" />
-            Privacy Policy
-        </Button>
+        <Link href="/privacy-policy" passHref>
+          <Button variant="ghost" className="w-full justify-start">
+              <Shield className="mr-2 h-4 w-4" />
+              Privacy Policy
+          </Button>
+        </Link>
         <Button variant="ghost" className="w-full justify-start">
             <MessageSquare className="mr-2 h-4 w-4" />
             Feedback
