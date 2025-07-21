@@ -54,17 +54,37 @@ export default function SurveyPage() {
   const [rating, setRating] = useState(0);
 
   function onSubmit(data: SurveyFormValues) {
-    const surveyData = { ...data, overallExperience: rating };
-    console.log("--- Survey Submission ---");
-    console.log("To: ibefikra1@gmail.com");
-    console.log("Subject: Feedback");
-    console.log("Body:", surveyData);
-    toast({
-      title: "Survey Submitted!",
-      description: "Thank you for completing the survey. Your feedback is invaluable!",
+    const surveyData = { ...data, overallExperience: rating || 'Not Rated' };
+    
+    let body = 'Hello,\n\nHere is a survey submission from a NexaAI user:\n\n';
+
+    Object.entries(surveyData).forEach(([key, value]) => {
+        if(value){
+            const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+            body += `${formattedKey}: ${value}\n`;
+        }
     });
-    form.reset();
-    setRating(0);
+
+    body += '\nRegards,\nNexaAI Survey System';
+
+    const subject = "NexaAI Survey Feedback";
+    const mailtoLink = `mailto:ibefikra1@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    try {
+      window.location.href = mailtoLink;
+      toast({
+        title: "Redirecting to Email Client",
+        description: "Please send the pre-filled email to submit your survey.",
+      });
+      form.reset();
+      setRating(0);
+    } catch(error) {
+       toast({
+        variant: "destructive",
+        title: "Oops! Something went wrong.",
+        description: "Could not open email client. Please copy the details manually.",
+      });
+    }
   }
 
   const sections = [

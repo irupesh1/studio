@@ -49,15 +49,39 @@ export default function FeedbackPage() {
   });
 
   function onSubmit(data: FeedbackFormValues) {
-    console.log("--- Feedback Submission ---");
-    console.log("To: ibefikra1@gmail.com");
-    console.log("Subject: Feedback");
-    console.log("Body:", data);
-    toast({
-      title: "Feedback Submitted!",
-      description: "Thank you for your valuable feedback. We'll review it shortly.",
-    });
-    form.reset();
+    const subject = "Feedback from NexaAI User";
+    const body = `Hello,
+
+Here is some feedback from a user:
+
+Name: ${data.name}
+
+Feedback:
+${data.feedback}
+
+Suggested Features:
+${data.suggestedFeatures || 'N/A'}
+
+Regards,
+NexaAI Feedback System
+`;
+
+    const mailtoLink = `mailto:ibefikra1@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    try {
+      window.location.href = mailtoLink;
+      toast({
+        title: "Redirecting to Email Client",
+        description: "Please send the pre-filled email to submit your feedback.",
+      });
+      form.reset();
+    } catch (error) {
+       toast({
+        variant: "destructive",
+        title: "Oops! Something went wrong.",
+        description: "Could not open email client. Please copy the details manually.",
+      });
+    }
   }
 
   return (
