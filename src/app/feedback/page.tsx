@@ -119,9 +119,6 @@ export default function FeedbackPage() {
                   render={({ field }) => (
                     <FormItem className="space-y-3">
                       <FormLabel>Quick Survey</FormLabel>
-                       <FormDescription>
-                        How would you rate your experience?
-                      </FormDescription>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -177,5 +174,3 @@ export default function FeedbackPage() {
     </div>
   );
 }
-
-    
