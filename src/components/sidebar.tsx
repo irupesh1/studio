@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Shield, MessageSquare, Info } from "lucide-react";
 
 interface SidebarProps {
   startNewChat: () => void;
@@ -9,8 +9,8 @@ interface SidebarProps {
 
 export function Sidebar({ startNewChat }: SidebarProps) {
   return (
-    <aside className="w-64 flex flex-col p-4 bg-muted/30 border-r">
-      <div className="flex items-center gap-2 mb-8">
+    <aside className="w-64 flex flex-col p-4 bg-muted/30 border-r h-full">
+      <div className="flex items-center gap-2 mb-4">
          <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 218 300" preserveAspectRatio="xMidYMid meet">
           <defs>
               <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -36,6 +36,20 @@ export function Sidebar({ startNewChat }: SidebarProps) {
         <Plus className="mr-2 h-4 w-4" />
         New Chat
       </Button>
+      <div className="mt-auto flex flex-col gap-2">
+        <Button variant="ghost" className="w-full justify-start">
+            <Shield className="mr-2 h-4 w-4" />
+            Privacy Policy
+        </Button>
+        <Button variant="ghost" className="w-full justify-start">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Feedback
+        </Button>
+        <Button variant="ghost" className="w-full justify-start">
+            <Info className="mr-2 h-4 w-4" />
+            About NexaAI
+        </Button>
+      </div>
     </aside>
   );
 }
