@@ -51,7 +51,7 @@ export default function FeedbackPage() {
   function onSubmit(data: FeedbackFormValues) {
     toast({
       title: "Feedback Submitted!",
-      description: "Thank you for your valuable feedback.",
+      description: "Thank you for your valuable feedback. We'll review it shortly.",
     });
     console.log(data);
     form.reset();
@@ -60,32 +60,32 @@ export default function FeedbackPage() {
   return (
     <div className="min-h-screen bg-muted/20 py-8 px-4">
       <div className="container mx-auto max-w-2xl">
-        <Card className="overflow-hidden">
-          <CardHeader className="flex flex-row items-center gap-4 p-6">
+        <Card className="overflow-hidden shadow-lg rounded-xl">
+          <CardHeader className="flex flex-row items-center gap-4 p-6 bg-card">
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="rounded-full">
+              <Button variant="outline" size="icon" className="rounded-full h-8 w-8">
                 <ArrowLeft className="h-4 w-4" />
                 <span className="sr-only">Back</span>
               </Button>
             </Link>
             <div>
-              <CardTitle className="text-2xl">Submit Feedback</CardTitle>
-              <CardDescription className="mt-1">
+              <CardTitle className="text-xl font-semibold">Submit Feedback</CardTitle>
+              <CardDescription className="mt-1 text-sm">
                 We'd love to hear your thoughts on NexaAI.
               </CardDescription>
             </div>
           </CardHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardContent className="p-6 pt-0 space-y-6">
+              <CardContent className="p-6 space-y-6">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel className="font-medium">Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Name" {...field} />
+                        <Input placeholder="Your Name" {...field} className="text-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -96,11 +96,11 @@ export default function FeedbackPage() {
                   name="feedback"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Feedback</FormLabel>
+                      <FormLabel className="font-medium">Feedback</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Tell us what you think..."
-                          className="resize-none"
+                          className="resize-none text-sm"
                           {...field}
                         />
                       </FormControl>
@@ -113,11 +113,11 @@ export default function FeedbackPage() {
                   name="suggestedFeatures"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Suggest Features (Optional)</FormLabel>
+                      <FormLabel className="font-medium">Suggest Features (Optional)</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="What new features would you like to see in NexaAI?"
-                          className="resize-none"
+                          className="resize-none text-sm"
                           {...field}
                         />
                       </FormControl>
@@ -129,14 +129,14 @@ export default function FeedbackPage() {
                 <Separator />
                 
                 <div className="space-y-3">
-                  <FormLabel>Have more time?</FormLabel>
-                   <a href="#" className="text-sm text-primary underline-offset-4 hover:underline">
-                      Quick Survey
+                  <FormLabel className="font-medium">Have more time?</FormLabel>
+                   <a href="#" className="block text-sm text-primary underline-offset-4 hover:underline">
+                      Take our Quick Survey
                     </a>
                 </div>
               </CardContent>
               <CardFooter className="p-6 pt-0 flex justify-center">
-                <Button type="submit" className="w-1/2">Submit Feedback</Button>
+                <Button type="submit" className="w-96">Submit Feedback</Button>
               </CardFooter>
             </form>
           </Form>
