@@ -54,10 +54,10 @@ export default function Home() {
                 <span>Feedback</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
+            <SidebarMenuItem className="flex justify-center">
                 <SidebarMenuButton
                   tooltip="About NexaAI"
-                  className="bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full"
+                  className="bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full w-auto px-4"
                 >
                   <span>About NexaAI</span>
                   <ArrowUpRight />
