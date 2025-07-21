@@ -116,7 +116,7 @@ export default function FeedbackPage() {
                     </a>
                 </div>
               </CardContent>
-              <CardFooter className="p-6 pt-0">
+              <CardFooter className="p-6 pt-0 flex justify-center">
                 <Button type="submit">Submit Feedback</Button>
               </CardFooter>
             </form>
