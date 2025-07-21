@@ -132,9 +132,9 @@ export default function FeedbackPage() {
                 
                 <div className="flex items-center justify-center gap-2">
                   <p className="text-sm text-muted-foreground">Have more time?</p>
-                   <a href="#" className="text-sm text-primary underline-offset-4 hover:underline">
+                   <Link href="/feedback/survey" className="text-sm text-primary underline-offset-4 hover:underline">
                       Quick Survey
-                    </a>
+                    </Link>
                 </div>
               </CardContent>
               <CardFooter className="bg-muted/50 p-4 flex justify-center">
