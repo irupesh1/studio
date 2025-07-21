@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 
 const surveyFormSchema = z.object({
     easeOfUse: z.string().optional(),
@@ -53,7 +54,11 @@ export default function SurveyPage() {
   const [rating, setRating] = useState(0);
 
   function onSubmit(data: SurveyFormValues) {
-    console.log({ ...data, overallExperience: rating });
+    const surveyData = { ...data, overallExperience: rating };
+    console.log("--- Survey Submission ---");
+    console.log("To: ibefikra1@gmail.com");
+    console.log("Subject: Feedback");
+    console.log("Body:", surveyData);
     toast({
       title: "Survey Submitted!",
       description: "Thank you for completing the survey. Your feedback is invaluable!",
@@ -188,7 +193,7 @@ export default function SurveyPage() {
                                                 control={form.control}
                                                 name="otherReason"
                                                 render={({ field: otherField }) => (
-                                                    <Textarea {...otherField} className="flex-1 h-10" placeholder="Please specify..."/>
+                                                    <Input {...otherField} className="flex-1 h-10" placeholder="Please specify..."/>
                                                 )}
                                             />
                                         </div>

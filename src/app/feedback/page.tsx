@@ -49,11 +49,14 @@ export default function FeedbackPage() {
   });
 
   function onSubmit(data: FeedbackFormValues) {
+    console.log("--- Feedback Submission ---");
+    console.log("To: ibefikra1@gmail.com");
+    console.log("Subject: Feedback");
+    console.log("Body:", data);
     toast({
       title: "Feedback Submitted!",
       description: "Thank you for your valuable feedback. We'll review it shortly.",
     });
-    console.log(data);
     form.reset();
   }
 
