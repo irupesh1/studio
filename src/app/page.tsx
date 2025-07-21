@@ -16,7 +16,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Bot, MessageSquarePlus, Shield, Star, Info } from "lucide-react";
+import { Bot, MessageSquarePlus, Shield, Star, Info, ArrowUpRight } from "lucide-react";
 import type { Message } from "@/types";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -55,10 +55,13 @@ export default function Home() {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="About NexaAI">
-                <Info />
-                <span>About NexaAI</span>
-              </SidebarMenuButton>
+                <SidebarMenuButton
+                  tooltip="About NexaAI"
+                  className="bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full"
+                >
+                  <span>About NexaAI</span>
+                  <ArrowUpRight />
+                </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
