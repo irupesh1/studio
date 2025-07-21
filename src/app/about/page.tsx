@@ -36,7 +36,7 @@ const highlights = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full">
+      <div className="max-w-4xl w-full">
         <Card className="shadow-2xl rounded-xl border-0 overflow-hidden">
           <CardHeader className="p-8 bg-card">
             <div className="flex items-center gap-4">
@@ -46,24 +46,24 @@ export default function AboutPage() {
                   <span className="sr-only">Back to Chat</span>
                 </Button>
               </Link>
-              <CardTitle className="text-2xl font-bold tracking-tight">About NexaAI</CardTitle>
+              <CardTitle className="text-3xl font-bold tracking-tight">About NexaAI</CardTitle>
             </div>
-            <p className="text-muted-foreground mt-4 text-sm">
+            <p className="text-muted-foreground mt-4">
               Nexa AI is not just another chatbot — it’s a smart, intuitive, and evolving AI companion designed to understand, learn, and grow with each interaction. What sets Nexa AI apart is its user-centric intelligence, deeply rooted in real-time responsiveness, privacy-first architecture, and adaptive learning.
             </p>
           </CardHeader>
           <CardContent className="p-8 space-y-8">
             <div>
-              <h2 className="text-xl font-semibold mb-6 text-center">Key Highlights</h2>
-              <div className="grid grid-cols-1 gap-8">
+              <h2 className="text-2xl font-semibold mb-8 text-center">Key Highlights</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {highlights.map((highlight, index) => (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 mt-1">
+                  <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex-shrink-0 mt-1 bg-primary/10 p-2 rounded-full">
                       {highlight.icon}
                     </div>
                     <div>
-                      <h3 className="text-base font-semibold">{highlight.title}</h3>
-                      <p className="text-muted-foreground text-xs leading-relaxed mt-1">{highlight.description}</p>
+                      <h3 className="text-md font-semibold">{highlight.title}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed mt-1">{highlight.description}</p>
                     </div>
                   </div>
                 ))}
@@ -71,7 +71,7 @@ export default function AboutPage() {
             </div>
             <Separator />
             <div className="text-center">
-              <p className="font-semibold text-sm">Thank you for being part of the NexaAI journey!</p>
+              <p className="font-semibold">Thank you for being part of the NexaAI journey!</p>
             </div>
           </CardContent>
         </Card>
