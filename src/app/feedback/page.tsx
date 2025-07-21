@@ -128,10 +128,10 @@ export default function FeedbackPage() {
 
                 <Separator />
                 
-                <div className="space-y-3">
-                  <FormLabel className="font-medium">Have more time?</FormLabel>
-                   <a href="#" className="block text-sm text-primary underline-offset-4 hover:underline">
-                      Take our Quick Survey
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium">Have more time?</p>
+                   <a href="#" className="text-sm text-primary underline-offset-4 hover:underline">
+                      Quick Survey
                     </a>
                 </div>
               </CardContent>
