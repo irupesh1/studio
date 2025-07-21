@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { Send, Bot, User, Loader2, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -84,6 +84,12 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     }
   };
 
+  const handleStopGenerating = () => {
+    // For now, we'll just reload the page.
+    // A more advanced implementation would require AbortController.
+    window.location.reload();
+  };
+
   return (
     <div className="flex flex-col h-full">
         <div className="flex-1 w-full">
@@ -154,29 +160,38 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
 
         <div className="w-full pb-8 pt-2">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <form onSubmit={handleSubmit} className="relative">
-                    <Input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onFocus={handleInitialGreeting}
-                        placeholder="Ask NexaAI anything"
-                        className="w-full h-12 pr-14 rounded-full shadow-lg"
-                        disabled={isLoading}
-                    />
+                {isLoading ? (
+                  <div className="flex justify-center">
                     <Button
-                        type="submit"
-                        size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full w-9 h-9"
-                        disabled={isLoading || !input.trim()}
-                        aria-label="Send message"
+                      variant="outline"
+                      onClick={handleStopGenerating}
+                      className="shadow-lg"
                     >
-                        {isLoading ? (
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                        <Send className="h-5 w-5" />
-                        )}
+                      <Square className="mr-2 h-4 w-4" />
+                      Stop generating
                     </Button>
-                </form>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="relative">
+                      <Input
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                          onFocus={handleInitialGreeting}
+                          placeholder="Ask NexaAI anything"
+                          className="w-full h-12 pr-14 rounded-full shadow-lg"
+                          disabled={isLoading}
+                      />
+                      <Button
+                          type="submit"
+                          size="icon"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full w-9 h-9"
+                          disabled={isLoading || !input.trim()}
+                          aria-label="Send message"
+                      >
+                          <Send className="h-5 w-5" />
+                      </Button>
+                  </form>
+                )}
             </div>
         </div>
     </div>
