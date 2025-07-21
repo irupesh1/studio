@@ -13,7 +13,7 @@ export default function Home() {
       const savedMessages = localStorage.getItem('chatMessages');
       if (savedMessages) {
         const parsedMessages = JSON.parse(savedMessages);
-        if (Array.isArray(parsedMessages)) {
+        if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
           setMessages(parsedMessages);
         }
       }
@@ -33,7 +33,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen">
-      <header className="py-0.5 px-4 border-b flex items-center justify-between">
+       <header className="py-2 px-4 border-b flex items-center justify-between">
         <div className="flex items-center gap-2">
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 218 300" preserveAspectRatio="xMidYMid meet">
             <defs>
@@ -50,7 +50,7 @@ export default function Home() {
                 <path d="M622 983 c-85 -17 -105 -163 -27 -205 71 -39 144 4 152 89 5 45 2 54 -23 81 -30 32 -62 43 -102 35z m63 -29 c25 -10 48 -62 40 -93 -10 -39 -44 -71 -77 -71 -41 0 -78 40 -78 83 0 65 55 104 115 81z"/>
             </g>
             </svg>
-            <h1 className="text-lg font-semibold">NexaAI</h1>
+            <h1 className="text-lg font-semibold">NexaAI Chat</h1>
         </div>
         <ThemeToggle />
       </header>
