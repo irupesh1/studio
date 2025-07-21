@@ -39,7 +39,7 @@ export default function AboutPage() {
       <div className="max-w-4xl w-full">
         <Card className="shadow-2xl rounded-xl border-0 overflow-hidden">
           <CardHeader className="p-8 bg-card">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-nowrap whitespace-nowrap">
               <Link href="/" passHref>
                 <Button variant="outline" size="icon" className="h-8 w-8 rounded-full">
                   <ArrowLeft className="h-4 w-4" />
