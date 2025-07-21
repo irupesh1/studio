@@ -47,7 +47,9 @@ export default function AboutPage() {
               <CardDescription className="mt-1">
                 Your smart, intuitive, and evolving AI companion.
               </CardDescription>
-              <Badge variant="secondary" className="mt-2">NexaAI Learner v1.0</Badge>
+              <Link href="/about/version" passHref>
+                <Badge variant="secondary" className="mt-2 cursor-pointer hover:bg-primary/10">NexaAI Learner v1.0</Badge>
+              </Link>
             </div>
           </CardHeader>
           <CardContent className="p-6 md:p-8 space-y-8">
