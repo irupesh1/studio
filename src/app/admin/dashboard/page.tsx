@@ -8,11 +8,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, User, MessageSquare, Palette, Link as LinkIcon, Edit, Settings } from "lucide-react";
+import { LogOut, User, MessageSquare, Palette, Link as LinkIcon, Edit, Settings, Trash2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
@@ -48,6 +48,20 @@ const shortcutsFormSchema = z.object({
   shortcuts: z.array(shortcutButtonSchema),
 });
 type ShortcutsFormValues = z.infer<typeof shortcutsFormSchema>;
+
+const themeCustomizationSchema = z.object({
+    headerBg: z.string(),
+    headerText: z.string(),
+    messageAreaBg: z.string(),
+    inputBg: z.string(),
+    inputBorder: z.string(),
+    inputText: z.string(),
+    inputPlaceholder: z.string(),
+    sendButtonBg: z.string(),
+    sendButtonIcon: z.string(),
+});
+type ThemeCustomizationValues = z.infer<typeof themeCustomizationSchema>;
+
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -89,18 +103,17 @@ export default function AdminDashboardPage() {
     };
   };
 
-
   const credentialsForm = useForm<CredentialsFormValues>({
     resolver: zodResolver(credentialsFormSchema),
     defaultValues: {
       username:  "NexaAIadmin",
       password: "NexaAIv1.0",
     },
-     effects: () => {
+     effects: (form) => {
         const storedUsername = localStorage.getItem("adminUsername");
         const storedPassword = localStorage.getItem("adminPassword");
-        if(storedUsername) credentialsForm.setValue("username", storedUsername);
-        if(storedPassword) credentialsForm.setValue("password", storedPassword);
+        if(storedUsername) form.setValue("username", storedUsername);
+        if(storedPassword) form.setValue("password", storedPassword);
     }
   });
 
@@ -110,11 +123,11 @@ export default function AdminDashboardPage() {
       title: "Nexa AI",
       description: "Your intelligent assistant for everything.",
     },
-     effects: () => {
+     effects: (form) => {
         const storedTitle = localStorage.getItem("welcomeTitle");
         const storedDescription = localStorage.getItem("welcomeDescription");
-        if(storedTitle) personalizationForm.setValue("title", storedTitle);
-        if(storedDescription) personalizationForm.setValue("description", storedDescription);
+        if(storedTitle) form.setValue("title", storedTitle);
+        if(storedDescription) form.setValue("description", storedDescription);
     }
   });
 
@@ -123,15 +136,38 @@ export default function AdminDashboardPage() {
     defaultValues: {
       fontFamily: "Inter",
     },
-    effects: () => {
+    effects: (form) => {
         const storedFont = localStorage.getItem("welcomeFontFamily");
-        if(storedFont) appearanceForm.setValue("fontFamily", storedFont);
+        if(storedFont) form.setValue("fontFamily", storedFont);
     }
   });
 
   const shortcutsForm = useForm<ShortcutsFormValues>({
     resolver: zodResolver(shortcutsFormSchema),
     defaultValues: getInitialShortcuts(),
+  });
+  
+  const themeForm = useForm<ThemeCustomizationValues>({
+      resolver: zodResolver(themeCustomizationSchema),
+      effects: (form) => {
+        const storedTheme = localStorage.getItem("customTheme");
+        if (storedTheme) {
+            const parsedTheme = JSON.parse(storedTheme);
+            form.reset(parsedTheme);
+        } else {
+            form.reset({
+                headerBg: "#FFFFFF",
+                headerText: "#000000",
+                messageAreaBg: "#F3F4F6",
+                inputBg: "#FFFFFF",
+                inputBorder: "#E5E7EB",
+                inputText: "#000000",
+                inputPlaceholder: "Ask NexaAI Anything...",
+                sendButtonBg: "#3B82F6",
+                sendButtonIcon: "#FFFFFF",
+            });
+        }
+      }
   });
 
 
@@ -155,6 +191,30 @@ export default function AdminDashboardPage() {
   const handleShortcutsSubmit = (data: ShortcutsFormValues) => {
     localStorage.setItem("shortcutButtons", JSON.stringify(data.shortcuts));
     toast({ title: "Success", description: "Shortcut buttons updated." });
+  };
+  
+  const handleThemeSubmit = (data: ThemeCustomizationValues) => {
+      localStorage.setItem("customTheme", JSON.stringify(data));
+      toast({ title: "Success", description: "Theme updated. Refresh to see changes." });
+      // Optionally trigger a custom event to update live
+      window.dispatchEvent(new Event('theme-updated'));
+  }
+  
+  const handleResetTheme = () => {
+    localStorage.removeItem("customTheme");
+    themeForm.reset({
+        headerBg: "#FFFFFF",
+        headerText: "#000000",
+        messageAreaBg: "#F3F4F6",
+        inputBg: "#FFFFFF",
+        inputBorder: "#E5E7EB",
+        inputText: "#000000",
+        inputPlaceholder: "Ask NexaAI Anything...",
+        sendButtonBg: "#3B82F6",
+        sendButtonIcon: "#FFFFFF",
+    });
+    toast({ title: "Theme Reset", description: "Custom theme has been reset to default." });
+    window.dispatchEvent(new Event('theme-updated'));
   };
 
 
@@ -292,6 +352,48 @@ export default function AdminDashboardPage() {
                 </CardContent>
             </Card>
 
+             <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Palette /> Theme Customization</CardTitle>
+                    <CardDescription>Override the default theme colors and styles.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Form {...themeForm}>
+                        <form onSubmit={themeForm.handleSubmit(handleThemeSubmit)} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField control={themeForm.control} name="headerBg" render={({ field }) => (<FormItem><FormLabel>Header Background</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={themeForm.control} name="headerText" render={({ field }) => (<FormItem><FormLabel>Header Text</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={themeForm.control} name="messageAreaBg" render={({ field }) => (<FormItem><FormLabel>Message Area BG</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={themeForm.control} name="inputBg" render={({ field }) => (<FormItem><FormLabel>Input BG</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={themeForm.control} name="inputBorder" render={({ field }) => (<FormItem><FormLabel>Input Border</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={themeForm.control} name="inputText" render={({ field }) => (<FormItem><FormLabel>Input Text</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={themeForm.control} name="sendButtonBg" render={({ field }) => (<FormItem><FormLabel>Send Button BG</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                                <FormField control={themeForm.control} name="sendButtonIcon" render={({ field }) => (<FormItem><FormLabel>Send Button Icon</FormLabel><FormControl><Input type="color" {...field} /></FormControl></FormItem>)} />
+                            </div>
+                            <FormField
+                                control={themeForm.control}
+                                name="inputPlaceholder"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Input Placeholder Text</FormLabel>
+                                        <FormControl><Input placeholder="Ask anything..." {...field} /></FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="flex items-center gap-4">
+                                <Button type="submit">Save Theme</Button>
+                            </div>
+                        </form>
+                    </Form>
+                </CardContent>
+                <CardFooter>
+                    <Button variant="destructive" onClick={handleResetTheme}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Reset Theme to Default
+                    </Button>
+                </CardFooter>
+            </Card>
+
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><LinkIcon/> Shortcut Buttons</CardTitle>
@@ -403,3 +505,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    

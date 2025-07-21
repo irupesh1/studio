@@ -41,6 +41,16 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom Theme Variables */
+    --custom-header-bg: hsl(var(--card));
+    --custom-header-text: hsl(var(--card-foreground));
+    --custom-message-area-bg: hsl(var(--background));
+    --custom-input-bg: hsl(var(--muted));
+    --custom-input-border: hsl(var(--border));
+    --custom-input-text: hsl(var(--foreground));
+    --custom-send-button-bg: hsl(var(--primary));
+    --custom-send-button-icon: hsl(var(--primary-foreground));
   }
   .dark {
     --background: 222 47% 11%;
@@ -75,6 +85,16 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom Theme Variables - Dark */
+    --custom-header-bg: hsl(var(--card));
+    --custom-header-text: hsl(var(--card-foreground));
+    --custom-message-area-bg: hsl(var(--background));
+    --custom-input-bg: hsl(var(--muted));
+    --custom-input-border: hsl(var(--border));
+    --custom-input-text: hsl(var(--foreground));
+    --custom-send-button-bg: hsl(var(--primary));
+    --custom-send-button-icon: hsl(var(--primary-foreground));
   }
 }
 
@@ -86,3 +106,5 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+    

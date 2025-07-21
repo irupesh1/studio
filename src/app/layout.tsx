@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { CustomThemeProvider } from "@/context/custom-theme-provider";
 
 export const metadata: Metadata = {
   title: 'NexaAI Chat',
@@ -27,10 +28,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <CustomThemeProvider>
+            {children}
+            <Toaster />
+          </CustomThemeProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
+    

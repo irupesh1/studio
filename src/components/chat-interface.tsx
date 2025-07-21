@@ -11,6 +11,7 @@ import { Send, Loader2, ClipboardCopy, ThumbsUp, ThumbsDown, Volume2, Share2, Re
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { useThemeContext } from '@/context/custom-theme-provider';
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -35,6 +36,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [welcomeFontFamily, setWelcomeFontFamily] = useState("Inter");
   const [shortcutButtons, setShortcutButtons] = useState<ShortcutButton[]>([]);
   const [hoveredButton, setHoveredButton] = useState<number | null>(null);
+  const { themeSettings } = useThemeContext();
+
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -157,7 +160,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   };
   
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" style={{ backgroundColor: 'var(--custom-message-area-bg)' }}>
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <div ref={viewportRef} className="h-full">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -279,18 +282,26 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                 <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask NexaAI Anything..."
-                    className="w-full h-12 pr-14 rounded-full bg-muted/50 focus-visible:ring-offset-0 focus-visible:ring-1 focus-visible:ring-primary border-0 shadow-none"
+                    placeholder={themeSettings.inputPlaceholder}
+                    className="w-full h-12 pr-14 rounded-full focus-visible:ring-offset-0 focus-visible:ring-1 shadow-none"
+                    style={{
+                        backgroundColor: 'var(--custom-input-bg)',
+                        borderColor: 'var(--custom-input-border)',
+                        color: 'var(--custom-input-text)'
+                    }}
                     disabled={isLoading}
                 />
                 <Button
                     type="submit"
                     size="icon"
                     className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full w-9 h-9"
+                    style={{ 
+                        backgroundColor: 'var(--custom-send-button-bg)'
+                    }}
                     disabled={isLoading || !input.trim()}
                     aria-label="Send message"
                 >
-                    <Send className="h-5 w-5" />
+                    <Send className="h-5 w-5" style={{ color: 'var(--custom-send-button-icon)' }} />
                 </Button>
             </form>
             <div className="flex justify-center items-center gap-2 mt-2">
@@ -304,3 +315,5 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     </div>
   );
 }
+
+    
