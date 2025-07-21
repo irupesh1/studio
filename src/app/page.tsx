@@ -9,27 +9,9 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    try {
-      const savedMessages = localStorage.getItem('chatMessages');
-      if (savedMessages) {
-        const parsedMessages = JSON.parse(savedMessages);
-        if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
-          setMessages(parsedMessages);
-        }
-      }
-    } catch (error) {
-        console.error("Failed to parse messages from localStorage", error);
-        setMessages([]);
-    }
+    // Clear any saved messages to ensure a new chat on every visit
+    localStorage.removeItem('chatMessages');
   }, []);
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem('chatMessages', JSON.stringify(messages));
-    } else {
-       localStorage.removeItem('chatMessages');
-    }
-  }, [messages]);
 
   return (
     <div className="flex flex-col h-screen">
