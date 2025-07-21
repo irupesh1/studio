@@ -8,6 +8,8 @@ import {
   SidebarTrigger,
   SidebarHeader,
   SidebarContent,
+  SidebarFooter,
+  SidebarSeparator,
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -34,6 +36,20 @@ export default function Home() {
         <SidebarContent>
           {/* Chat history can be listed here */}
         </SidebarContent>
+        <SidebarSeparator />
+        <SidebarFooter>
+          <div className="flex flex-col gap-2">
+            <Button variant="ghost" className="w-full justify-start">
+              🔏 Privacy Policy
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Feedback
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              About NexaAI
+            </Button>
+          </div>
+        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <div className="flex flex-col h-screen">
