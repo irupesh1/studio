@@ -12,9 +12,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
-import { LogOut, User, KeyRound, Image as ImageIcon, MessageSquare, Palette } from "lucide-react";
+import { LogOut, User, MessageSquare, Palette, Link as LinkIcon, Edit, Settings } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 
 const credentialsFormSchema = z.object({
   username: z.string().min(4, { message: "Username must be at least 4 characters." }),
@@ -34,6 +36,20 @@ const appearanceFormSchema = z.object({
 });
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
+const shortcutButtonSchema = z.object({
+  enabled: z.boolean(),
+  text: z.string(),
+  link: z.string(),
+  bgColor: z.string(),
+  textColor: z.string(),
+  hoverBgColor: z.string(),
+  hoverTextColor: z.string(),
+});
+const shortcutsFormSchema = z.object({
+  shortcuts: z.array(shortcutButtonSchema),
+});
+type ShortcutsFormValues = z.infer<typeof shortcutsFormSchema>;
+
 export default function AdminDashboardPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -47,29 +63,79 @@ export default function AdminDashboardPage() {
       setIsAuthenticated(true);
     }
   }, [router]);
+  
+  const getInitialShortcuts = (): ShortcutsFormValues => {
+    try {
+      const storedShortcuts = localStorage.getItem("shortcutButtons");
+      if (storedShortcuts) {
+        const parsed = JSON.parse(storedShortcuts);
+        if(Array.isArray(parsed) && parsed.length === 4) {
+            return { shortcuts: parsed };
+        }
+      }
+    } catch (e) {
+        console.error("Failed to parse shortcuts from localStorage", e);
+    }
+
+    return {
+      shortcuts: Array(4).fill({
+        enabled: false,
+        text: "Learn More",
+        link: "#",
+        bgColor: "#3B82F6",
+        textColor: "#FFFFFF",
+        hoverBgColor: "#2563EB",
+        hoverTextColor: "#FFFFFF",
+      }),
+    };
+  };
+
 
   const credentialsForm = useForm<CredentialsFormValues>({
     resolver: zodResolver(credentialsFormSchema),
     defaultValues: {
-      username: localStorage.getItem("adminUsername") || "NexaAIadmin",
-      password: localStorage.getItem("adminPassword") || "NexaAIv1.0",
+      username:  "NexaAIadmin",
+      password: "NexaAIv1.0",
     },
+     effects: () => {
+        const storedUsername = localStorage.getItem("adminUsername");
+        const storedPassword = localStorage.getItem("adminPassword");
+        if(storedUsername) credentialsForm.setValue("username", storedUsername);
+        if(storedPassword) credentialsForm.setValue("password", storedPassword);
+    }
   });
 
   const personalizationForm = useForm<PersonalizationFormValues>({
     resolver: zodResolver(personalizationFormSchema),
     defaultValues: {
-      title: localStorage.getItem("welcomeTitle") || "Nexa AI",
-      description: localStorage.getItem("welcomeDescription") || "Your intelligent assistant for everything.",
+      title: "Nexa AI",
+      description: "Your intelligent assistant for everything.",
     },
+     effects: () => {
+        const storedTitle = localStorage.getItem("welcomeTitle");
+        const storedDescription = localStorage.getItem("welcomeDescription");
+        if(storedTitle) personalizationForm.setValue("title", storedTitle);
+        if(storedDescription) personalizationForm.setValue("description", storedDescription);
+    }
   });
 
   const appearanceForm = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
     defaultValues: {
-      fontFamily: localStorage.getItem("welcomeFontFamily") || "Inter",
-      titleColor: localStorage.getItem("welcomeTitleColor") || "#000000",
+      fontFamily: "Inter",
+      titleColor: "#000000",
+    },
+    effects: () => {
+        const storedFont = localStorage.getItem("welcomeFontFamily");
+        const storedColor = localStorage.getItem("welcomeTitleColor");
+        if(storedFont) appearanceForm.setValue("fontFamily", storedFont);
+        if(storedColor) appearanceForm.setValue("titleColor", storedColor);
     }
+  });
+
+  const shortcutsForm = useForm<ShortcutsFormValues>({
+    resolver: zodResolver(shortcutsFormSchema),
+    defaultValues: getInitialShortcuts(),
   });
 
 
@@ -90,6 +156,12 @@ export default function AdminDashboardPage() {
     localStorage.setItem("welcomeTitleColor", data.titleColor || '#000000');
     toast({ title: "Success", description: "Appearance settings updated." });
   };
+  
+  const handleShortcutsSubmit = (data: ShortcutsFormValues) => {
+    localStorage.setItem("shortcutButtons", JSON.stringify(data.shortcuts));
+    toast({ title: "Success", description: "Shortcut buttons updated." });
+  };
+
 
   const handleLogout = () => {
     localStorage.removeItem("isAdminAuthenticated");
@@ -152,108 +224,200 @@ export default function AdminDashboardPage() {
                     </Form>
                 </CardContent>
             </Card>
-
-            {/* Personalization Card */}
+            
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><MessageSquare/> Welcome Screen</CardTitle>
-                    <CardDescription>Customize the initial text shown in the chat window.</CardDescription>
+                    <CardTitle className="flex items-center gap-2"><Settings/> App Customization</CardTitle>
+                    <CardDescription>Customize the look and feel of the welcome screen.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                     <div>
+                        <Form {...personalizationForm}>
+                            <form onSubmit={personalizationForm.handleSubmit(handlePersonalizationSubmit)} className="space-y-4">
+                                <h3 className="font-semibold text-lg flex items-center gap-2"><MessageSquare/> Welcome Content</h3>
+                                <FormField
+                                    control={personalizationForm.control}
+                                    name="title"
+                                    render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Welcome Title</FormLabel>
+                                        <FormControl><Input {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={personalizationForm.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Welcome Description</FormLabel>
+                                        <FormControl><Textarea {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                    )}
+                                />
+                                <Button type="submit">Update Content</Button>
+                            </form>
+                        </Form>
+                    </div>
+
+                    <Separator/>
+
+                    <div>
+                        <Form {...appearanceForm}>
+                            <form onSubmit={appearanceForm.handleSubmit(handleAppearanceSubmit)} className="space-y-4">
+                                <h3 className="font-semibold text-lg flex items-center gap-2"><Palette/> Appearance</h3>
+                                <FormField
+                                    control={appearanceForm.control}
+                                    name="fontFamily"
+                                    render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Font Family</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                            <SelectValue placeholder="Select a font" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="Inter">Inter</SelectItem>
+                                            <SelectItem value="Roboto">Roboto</SelectItem>
+                                            <SelectItem value="Lato">Lato</SelectItem>
+                                        </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={appearanceForm.control}
+                                    name="titleColor"
+                                    render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Welcome Title Color</FormLabel>
+                                        <FormControl><Input type="color" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                    )}
+                                />
+                                <Button type="submit">Update Appearance</Button>
+                            </form>
+                        </Form>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><LinkIcon/> Shortcut Buttons</CardTitle>
+                    <CardDescription>Configure up to 4 shortcut buttons for the welcome screen.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Form {...personalizationForm}>
-                        <form onSubmit={personalizationForm.handleSubmit(handlePersonalizationSubmit)} className="space-y-4">
-                            <FormField
-                                control={personalizationForm.control}
-                                name="title"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Welcome Title</FormLabel>
-                                    <FormControl><Input {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={personalizationForm.control}
-                                name="description"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Welcome Description</FormLabel>
-                                    <FormControl><Textarea {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <Button type="submit">Update Welcome Screen</Button>
-                        </form>
-                    </Form>
+                   <Form {...shortcutsForm}>
+                     <form onSubmit={shortcutsForm.handleSubmit(handleShortcutsSubmit)} className="space-y-4">
+                        <Accordion type="multiple" className="w-full">
+                           {Array.from({ length: 4 }).map((_, index) => (
+                             <AccordionItem key={index} value={`item-${index}`}>
+                                <AccordionTrigger>
+                                    <h4 className="font-semibold">Button {index + 1}</h4>
+                                </AccordionTrigger>
+                                <AccordionContent className="space-y-4 pt-4">
+                                     <FormField
+                                        control={shortcutsForm.control}
+                                        name={`shortcuts.${index}.enabled`}
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel>Enable Button</FormLabel>
+                                                    <FormDescription>
+                                                        Show this button on the welcome screen.
+                                                    </FormDescription>
+                                                </div>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <FormField
+                                            control={shortcutsForm.control}
+                                            name={`shortcuts.${index}.text`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Button Text</FormLabel>
+                                                <FormControl><Input placeholder="e.g., View Docs" {...field} /></FormControl>
+                                            </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={shortcutsForm.control}
+                                            name={`shortcuts.${index}.link`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Navigation Link</FormLabel>
+                                                <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+                                            </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={shortcutsForm.control}
+                                            name={`shortcuts.${index}.bgColor`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Background Color</FormLabel>
+                                                <FormControl><Input type="color" {...field} /></FormControl>
+                                            </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={shortcutsForm.control}
+                                            name={`shortcuts.${index}.textColor`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Text Color</FormLabel>
+                                                <FormControl><Input type="color" {...field} /></FormControl>
+                                            </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={shortcutsForm.control}
+                                            name={`shortcuts.${index}.hoverBgColor`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Hover BG Color</FormLabel>
+                                                <FormControl><Input type="color" {...field} /></FormControl>
+                                            </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={shortcutsForm.control}
+                                            name={`shortcuts.${index}.hoverTextColor`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Hover Text Color</FormLabel>
+                                                <FormControl><Input type="color" {...field} /></FormControl>
+                                            </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                </AccordionContent>
+                             </AccordionItem>
+                            ))}
+                        </Accordion>
+                        <Button type="submit">Update Shortcut Buttons</Button>
+                     </form>
+                   </Form>
                 </CardContent>
             </Card>
-
-            {/* Appearance Customization Card */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Palette/> Appearance Customization</CardTitle>
-                    <CardDescription>Customize the font and colors of the welcome screen.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Form {...appearanceForm}>
-                        <form onSubmit={appearanceForm.handleSubmit(handleAppearanceSubmit)} className="space-y-4">
-                            <FormField
-                                control={appearanceForm.control}
-                                name="fontFamily"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Font Family</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                        <SelectValue placeholder="Select a font" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Inter">Inter</SelectItem>
-                                        <SelectItem value="Roboto">Roboto</SelectItem>
-                                        <SelectItem value="Lato">Lato</SelectItem>
-                                    </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                             <FormField
-                                control={appearanceForm.control}
-                                name="titleColor"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Welcome Title Color</FormLabel>
-                                    <FormControl><Input type="color" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <Button type="submit">Update Appearance</Button>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
-
-
-             {/* Logo Card */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><ImageIcon/> Logo Customization</CardTitle>
-                    <CardDescription>This feature requires file handling capabilities.</CardDescription>
-                </Header>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        Logo and icon customization is planned for a future update. The current AI prototyping environment does not support file uploads.
-                    </p>
-                </CardContent>
-            </Card>
-
         </div>
       </div>
     </div>
   );
 }
+
+    

@@ -10,10 +10,21 @@ import { Input } from '@/components/ui/input';
 import { Send, Loader2, ClipboardCopy, ThumbsUp, ThumbsDown, Volume2, Share2, RefreshCw, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 interface ChatInterfaceProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}
+
+interface ShortcutButton {
+  enabled: boolean;
+  text: string;
+  link: string;
+  bgColor: string;
+  textColor: string;
+  hoverBgColor: string;
+  hoverTextColor: string;
 }
 
 export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
@@ -23,23 +34,35 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [welcomeDescription, setWelcomeDescription] = useState("Your intelligent assistant for everything.");
   const [welcomeFontFamily, setWelcomeFontFamily] = useState("Inter");
   const [welcomeTitleColor, setWelcomeTitleColor] = useState("#000000");
+  const [shortcutButtons, setShortcutButtons] = useState<ShortcutButton[]>([]);
+  const [hoveredButton, setHoveredButton] = useState<number | null>(null);
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    // On component mount, get custom welcome messages from localStorage if they exist
+    // On component mount, get custom settings from localStorage if they exist
     const savedTitle = localStorage.getItem("welcomeTitle");
     const savedDescription = localStorage.getItem("welcomeDescription");
     const savedFont = localStorage.getItem("welcomeFontFamily");
     const savedColor = localStorage.getItem("welcomeTitleColor");
+    const savedButtons = localStorage.getItem("shortcutButtons");
 
     if (savedTitle) setWelcomeTitle(savedTitle);
     if (savedDescription) setWelcomeDescription(savedDescription);
     if (savedFont) setWelcomeFontFamily(savedFont);
     if (savedColor) setWelcomeTitleColor(savedColor);
-
+    if (savedButtons) {
+        try {
+            const parsedButtons = JSON.parse(savedButtons);
+            if(Array.isArray(parsedButtons)) {
+                setShortcutButtons(parsedButtons.filter(btn => btn.enabled));
+            }
+        } catch(e) {
+            console.error("Failed to parse shortcut buttons from localStorage", e);
+        }
+    }
   }, []);
 
   const scrollToBottom = () => {
@@ -81,11 +104,12 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     const lastAiMessageIndex = messages.map(m => m.role).lastIndexOf('assistant');
     if (lastAiMessageIndex === -1) return;
     
+    // History up to the message before the last AI response
     const historyForRegeneration = messages.slice(0, lastAiMessageIndex);
     if (historyForRegeneration.length === 0 || historyForRegeneration[historyForRegeneration.length-1].role !== 'user') return;
 
     setIsLoading(true);
-    setMessages(historyForRegeneration);
+    setMessages(historyForRegeneration); // Show UI state without the last AI message
 
     try {
       const aiMessage = await regenerateResponse(historyForRegeneration);
@@ -97,7 +121,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         title: 'Error',
         description: 'Failed to regenerate response.',
       });
-      setMessages(messages);
+      setMessages(messages); // Restore original messages on failure
     } finally {
       setIsLoading(false);
     }
@@ -144,6 +168,29 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
               <div className="text-center mt-[calc(20vh-4rem)] animate-in fade-in-50 duration-500">
                   <h1 className="text-5xl font-bold" style={{ fontFamily: welcomeFontFamily, color: welcomeTitleColor }}>{welcomeTitle}</h1>
                   <p className="mt-4 text-lg text-muted-foreground" style={{ fontFamily: welcomeFontFamily }}>{welcomeDescription}</p>
+                  <div className="mt-8 flex justify-center items-center gap-4 flex-wrap">
+                    {shortcutButtons.map((btn, index) => (
+                        <Link href={btn.link} key={index} passHref>
+                          <button
+                            onMouseEnter={() => setHoveredButton(index)}
+                            onMouseLeave={() => setHoveredButton(null)}
+                            style={{
+                                backgroundColor: hoveredButton === index ? btn.hoverBgColor : btn.bgColor,
+                                color: hoveredButton === index ? btn.hoverTextColor : btn.textColor,
+                                transition: 'background-color 0.3s, color 0.3s',
+                                padding: '10px 20px',
+                                borderRadius: '9999px',
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                border: 'none',
+                                cursor: 'pointer',
+                            }}
+                          >
+                            {btn.text}
+                          </button>
+                        </Link>
+                    ))}
+                  </div>
               </div>
           ) : (
             <div className="space-y-8">
@@ -260,3 +307,5 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     </div>
   );
 }
+
+    
