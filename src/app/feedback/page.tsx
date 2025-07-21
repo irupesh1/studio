@@ -111,9 +111,9 @@ export default function FeedbackPage() {
                 
                 <div className="space-y-3">
                   <FormLabel>Have more time?</FormLabel>
-                   <Button type="button" variant="outline">
-                    Quick Survey
-                  </Button>
+                   <a href="#" className="text-sm text-primary underline-offset-4 hover:underline">
+                      Quick Survey
+                    </a>
                 </div>
               </CardContent>
               <CardFooter className="p-6 pt-0">
