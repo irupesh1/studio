@@ -1,17 +1,61 @@
+
 "use client";
 
+import { useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Plus, Shield, MessageSquare, ArrowUpRight, Info } from "lucide-react";
+import { Plus, Shield, MessageSquare, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 interface SidebarProps {
   startNewChat: () => void;
 }
 
 export function Sidebar({ startNewChat }: SidebarProps) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const pressTimer = useRef<NodeJS.Timeout | null>(null);
+
+  const handleLogoClick = () => {
+    // This handles the "double-click" part.
+    // The default behavior of a single click is to do nothing or can be defined here.
+  };
+
+  const handleLogoDoubleClick = () => {
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current);
+    }
+    toast({ title: "Admin panel unlocked." });
+    router.push('/admin/login');
+  };
+
+  const handleMouseDown = () => {
+    pressTimer.current = setTimeout(() => {
+      toast({ title: "Admin panel unlocked." });
+      router.push('/admin/login');
+    }, 2000); // 2-second long press
+  };
+
+  const handleMouseUp = () => {
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current);
+    }
+  };
+
   return (
     <aside className="w-64 flex flex-col p-4 bg-muted/30 border-r h-full">
-      <div className="flex items-center gap-2 mb-4">
+      <div 
+        className="flex items-center gap-2 mb-4 cursor-pointer"
+        onClick={handleLogoClick}
+        onDoubleClick={handleLogoDoubleClick}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp} // Clear timer if mouse leaves
+        onTouchStart={handleMouseDown}
+        onTouchEnd={handleMouseUp}
+        title="Double-click or long-press for admin login"
+      >
          <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 218 300" preserveAspectRatio="xMidYMid meet">
           <defs>
               <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">

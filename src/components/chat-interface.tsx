@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, type FormEvent } from 'react';
-import { sendMessage, regenerateResponse, getAudioForText } from '@/app/actions';
+import { sendMessage, regenerateResponse } from '@/app/actions';
 import type { Message } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
@@ -19,9 +19,19 @@ interface ChatInterfaceProps {
 export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [welcomeTitle, setWelcomeTitle] = useState("Nexa AI");
+  const [welcomeDescription, setWelcomeDescription] = useState("Your intelligent assistant for everything.");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // On component mount, get custom welcome messages from localStorage if they exist
+    const savedTitle = localStorage.getItem("welcomeTitle");
+    const savedDescription = localStorage.getItem("welcomeDescription");
+    if (savedTitle) setWelcomeTitle(savedTitle);
+    if (savedDescription) setWelcomeDescription(savedDescription);
+  }, []);
 
   const scrollToBottom = () => {
     if (viewportRef.current) {
@@ -58,12 +68,16 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
 
   const handleRegenerate = async () => {
     if (isLoading) return;
+  
+    // Find the last assistant message to remove it and get the history before it
+    const lastAiMessageIndex = messages.map(m => m.role).lastIndexOf('assistant');
+    if (lastAiMessageIndex === -1) return; // No AI message to regenerate from
     
-    const lastUserMessageIndex = messages.map(m => m.role).lastIndexOf('user');
-    if (lastUserMessageIndex === -1) return;
+    // The history should be all messages before the last AI response
+    const historyForRegeneration = messages.slice(0, lastAiMessageIndex);
+    if(historyForRegeneration.length === 0) return; // Cannot regenerate without history
 
     setIsLoading(true);
-    const historyForRegeneration = messages.slice(0, lastUserMessageIndex + 1);
     setMessages(historyForRegeneration); // Visually remove the old AI response
 
     try {
@@ -76,6 +90,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         title: 'Error',
         description: 'Failed to regenerate response.',
       });
+      // Restore previous messages on failure
+      setMessages(messages);
     } finally {
       setIsLoading(false);
     }
@@ -120,8 +136,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {messages.length === 0 && !isLoading ? (
               <div className="text-center mt-[calc(20vh-4rem)]">
-                  <h1 className="text-5xl font-bold text-primary">Nexa AI</h1>
-                  <p className="mt-4 text-lg text-muted-foreground">Your intelligent assistant for everything.</p>
+                  <h1 className="text-5xl font-bold text-primary">{welcomeTitle}</h1>
+                  <p className="mt-4 text-lg text-muted-foreground">{welcomeDescription}</p>
               </div>
           ) : (
             <div className="space-y-8">
