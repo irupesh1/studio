@@ -19,10 +19,6 @@ interface ChatInterfaceProps {
 export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [audioLoading, setAudioLoading] = useState<string | null>(null);
-  const [activeAudio, setActiveAudio] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -61,15 +57,18 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   };
 
   const handleRegenerate = async () => {
-    const lastAssistantMessageIndex = messages.map(m => m.role).lastIndexOf('assistant');
-    if (lastAssistantMessageIndex === -1 || isLoading) return;
+    if (isLoading) return;
+    
+    const lastUserMessageIndex = messages.map(m => m.role).lastIndexOf('user');
+    if (lastUserMessageIndex === -1) return;
 
     setIsLoading(true);
-    const historyForRegeneration = messages.slice(0, lastAssistantMessageIndex);
-    
+    const historyForRegeneration = messages.slice(0, lastUserMessageIndex + 1);
+    setMessages(historyForRegeneration); // Visually remove the old AI response
+
     try {
       const aiMessage = await regenerateResponse(historyForRegeneration);
-      setMessages(prev => [...prev.slice(0, lastAssistantMessageIndex), aiMessage]);
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error(error);
       toast({
@@ -120,7 +119,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         <div ref={viewportRef} className="h-full">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {messages.length === 0 && !isLoading ? (
-              <div className="text-center mt-[20vh]">
+              <div className="text-center mt-[calc(20vh-4rem)]">
                   <h1 className="text-5xl font-bold text-primary">Nexa AI</h1>
                   <p className="mt-4 text-lg text-muted-foreground">Your intelligent assistant for everything.</p>
               </div>
