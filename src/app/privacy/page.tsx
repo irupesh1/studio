@@ -1,3 +1,4 @@
+
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -90,7 +91,7 @@ export default function PrivacyPolicy() {
                 <h2 className="font-semibold text-base mb-2">9. User Control and Transparency</h2>
                 <p>You are in full control of your data.</p>
                 <ul className="list-disc pl-6 space-y-1 mt-2">
-                    <li>You can delete your data anytime by refreshing the page or clearing local storage in your browser settings.</li>
+                    <li>You can delete your data anytime by refreshing the page or clearing your browser settings.</li>
                 </ul>
             </div>
             
