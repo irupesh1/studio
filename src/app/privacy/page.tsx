@@ -16,15 +16,15 @@ export default function PrivacyPolicy() {
         </Link>
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-center">Privacy Policy</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">Privacy Policy</CardTitle>
           </CardHeader>
-          <CardContent className="prose prose-sm md:prose-base max-w-none dark:prose-invert">
+          <CardContent className="prose prose-xs md:prose-sm max-w-none dark:prose-invert">
             <p className="text-center text-muted-foreground">Effective Date: Date Release Soon..</p>
             <p className="text-center">Welcome to NexaAI. Your privacy is important to us. This Privacy Policy outlines how we collect, use, store, and protect your data when you interact with our services through the website.</p>
 
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">1. Information We Collect</h2>
+            <h2 className="font-semibold text-lg">1. Information We Collect</h2>
             <p>We are committed to minimal data collection to protect your privacy. Here's what we collect:</p>
             <ul>
               <li><strong>User Conversations:</strong> We temporarily store your past chat interactions only on your local device storage (localStorage).</li>
@@ -33,7 +33,7 @@ export default function PrivacyPolicy() {
 
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">2. How We Use Your Data</h2>
+            <h2 className="font-semibold text-lg">2. How We Use Your Data</h2>
             <ul>
                 <li><strong>Training NexaAI Locally:</strong> Your previous messages are stored temporarily to enhance conversation continuity and context understanding. This helps NexaAI perform better during your current session.</li>
                 <li><strong>Improved User Experience:</strong> We use temporary local data to personalize responses and remember preferences during the same session.</li>
@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
 
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">3. Local Storage Usage</h2>
+            <h2 className="font-semibold text-lg">3. Local Storage Usage</h2>
             <ul>
                 <li>Your data is not sent to any server or shared with third parties.</li>
                 <li>Data is stored only in your browser’s local storage and is used exclusively by NexaAI on your device.</li>
@@ -51,17 +51,17 @@ export default function PrivacyPolicy() {
 
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">4. No Account or Login Required</h2>
+            <h2 className="font-semibold text-lg">4. No Account or Login Required</h2>
             <p>NexaAI does not require account creation or user login to interact. This helps protect your identity and ensures complete anonymity.</p>
 
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">5. No Third-Party Sharing</h2>
+            <h2 className="font-semibold text-lg">5. No Third-Party Sharing</h2>
             <p>We do not share, sell, or rent your data to any third parties. Your interactions are completely private and remain on your device.</p>
 
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">6. Cookies and Tracking</h2>
+            <h2 className="font-semibold text-lg">6. Cookies and Tracking</h2>
             <ul>
                 <li>NexaAI does not use cookies for advertising or tracking purposes.</li>
                 <li>We may use session-based storage for interface settings or features (e.g., theme, language).</li>
@@ -69,12 +69,12 @@ export default function PrivacyPolicy() {
             
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">7. Children's Privacy</h2>
+            <h2 className="font-semibold text-lg">7. Children's Privacy</h2>
             <p>Our services are not intended for children under the age of 13. We do not knowingly collect personal data from minors.</p>
             
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">8. Data Security</h2>
+            <h2 className="font-semibold text-lg">8. Data Security</h2>
             <p>Although your data is stored locally, we recommend:</p>
             <ul>
                 <li>Using personal devices you trust.</li>
@@ -84,7 +84,7 @@ export default function PrivacyPolicy() {
             
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">9. User Control and Transparency</h2>
+            <h2 className="font-semibold text-lg">9. User Control and Transparency</h2>
             <p>You are in full control of your data.</p>
             <ul>
                 <li>You can delete your data anytime by refreshing the page or clearing local storage in your browser settings.</li>
@@ -92,12 +92,12 @@ export default function PrivacyPolicy() {
             
             <Separator className="my-6" />
             
-            <h2 className="font-semibold text-xl">10. Future Changes</h2>
+            <h2 className="font-semibold text-lg">10. Future Changes</h2>
             <p>We may update this Privacy Policy in the future to reflect changes in technology, laws, or our services. Changes will be posted here with an updated effective date.</p>
             
             <Separator className="my-6" />
 
-            <h2 className="font-semibold text-xl">11. Contact Us</h2>
+            <h2 className="font-semibold text-lg">11. Contact Us</h2>
             <p>If you have any questions or concerns about this policy, feel free to contact the developer:</p>
             <ul>
                 <li><strong>Developer:</strong> Team NexaAI</li>

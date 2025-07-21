@@ -100,7 +100,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                         <div className="inline-block p-4 bg-primary/10 rounded-full">
                             <Bot size={40} className="text-primary" />
                         </div>
-                        <h1 className="text-4xl font-bold mt-4">How can I help you today?</h1>
+                        <h1 className="text-3xl font-bold mt-4">How can I help you today?</h1>
                     </div>
                 ) : (
                     <div className="space-y-8">
@@ -125,10 +125,10 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                             </Avatar>
                         )}
                         <div className="flex-1">
-                            <p className="font-semibold">
+                            <p className="font-semibold text-sm">
                             {message.role === 'assistant' ? 'NexaAI' : 'You'}
                             </p>
-                            <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
+                            <div className="prose prose-xs max-w-none text-foreground whitespace-pre-wrap">
                                 {message.content}
                             </div>
                         </div>
@@ -145,7 +145,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                             <p className="font-semibold">NexaAI</p>
                             <div className="flex items-center space-x-2 mt-1">
                             <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-xs text-muted-foreground">
                                 NexaAI is thinking...
                             </span>
                             </div>
