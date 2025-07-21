@@ -5,12 +5,13 @@ import { generateResponse } from '@/ai/flows/generate-response';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
 import type { Message } from '@/types';
 
-export async function sendMessage(message: string): Promise<Message> {
+export async function sendMessage(history: Message[]): Promise<Message> {
   try {
-    const { sentiment } = await analyzeUserSentiment({ message });
+    const latestMessage = history[history.length - 1];
+    const { sentiment } = await analyzeUserSentiment({ message: latestMessage.content });
 
     const { response } = await generateResponse({
-      userInput: message,
+      history: history.map(({id, audioUrl, ...rest}) => rest),
       sentiment: sentiment,
     });
 

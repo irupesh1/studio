@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { ChatInterface } from "@/components/chat-interface";
 import {
@@ -24,8 +24,28 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
 
+  useEffect(() => {
+    try {
+      const savedMessages = localStorage.getItem('chatMessages');
+      if (savedMessages) {
+        setMessages(JSON.parse(savedMessages));
+      }
+    } catch (error) {
+        console.error("Failed to parse messages from localStorage", error);
+        // Set to empty array if parsing fails
+        setMessages([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+    }
+  }, [messages]);
+
   const handleNewChat = () => {
     setMessages([]);
+    localStorage.removeItem('chatMessages');
   };
 
   return (
@@ -111,5 +131,3 @@ export default function Home() {
     </SidebarProvider>
   );
 }
-
-    

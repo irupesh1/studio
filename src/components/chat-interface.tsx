@@ -51,7 +51,9 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
     
+    let currentMessages = messages;
     if (messages.length > 0 && messages[0].id === 'initial-greeting') {
+        currentMessages = [];
         setMessages([]);
     }
 
@@ -61,13 +63,13 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
       content: input,
     };
     
-    setMessages((prev) => [...prev, userMessage]);
-    const currentInput = input;
+    const newMessages = [...currentMessages, userMessage];
+    setMessages(newMessages);
     setInput('');
     setIsLoading(true);
 
     try {
-      const aiMessage = await sendMessage(currentInput);
+      const aiMessage = await sendMessage(newMessages);
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error(error);

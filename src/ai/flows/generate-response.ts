@@ -11,8 +11,13 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+const MessageSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.string(),
+});
+
 const GenerateResponseInputSchema = z.object({
-  userInput: z.string().describe('The user input message.'),
+  history: z.array(MessageSchema).describe('The conversation history.'),
   sentiment: z.string().describe('The sentiment of the user input.'),
 });
 
@@ -38,9 +43,13 @@ const generateResponsePrompt = ai.definePrompt({
 
   The current sentiment of the user is: {{{sentiment}}}
 
-  User Input: {{{userInput}}}
+  Conversation History:
+  {{#each history}}
+  {{this.role}}: {{{this.content}}}
+  {{/each}}
+  assistant:
 
-  Generate a relevant and coherent response based on the user input and sentiment:
+  Generate a relevant and coherent response based on the conversation history and sentiment:
   `,
 });
 
