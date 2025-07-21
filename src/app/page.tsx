@@ -31,7 +31,6 @@ export default function Home() {
               </Button>
             </Link>
           ),
-          duration: 10000, 
         });
         setFeedbackPromptShown(true);
       }, 30000); // 30 seconds
