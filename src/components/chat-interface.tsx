@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Send, Loader2, Bot, ClipboardCopy, ThumbsUp, ThumbsDown, Volume2, Share2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -65,13 +66,16 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   
   return (
     <div className="flex flex-col h-full">
+       <header className="absolute top-4 right-4">
+        <ThemeToggle />
+      </header>
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <div ref={viewportRef} className="h-full">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {messages.length === 0 && !isLoading ? (
               <div className="text-center mt-[20vh] text-foreground">
-                  <h1 className="text-2xl font-bold mt-4">Hi Rupesh! 😊</h1>
-                  <p className="mt-2">How can I help you today?</p>
+                  <h1 className="text-4xl font-bold">NexaAI Chat</h1>
+                  <p className="mt-2 text-muted-foreground">How can I help you today?</p>
               </div>
           ) : (
             <div className="space-y-8">
