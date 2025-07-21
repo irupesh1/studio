@@ -27,7 +27,8 @@ export default function VersionPage() {
     const storedContent = localStorage.getItem("versionPageContent");
     if (storedContent) {
       try {
-        setContent(JSON.parse(storedContent));
+        const parsedContent = JSON.parse(storedContent);
+        setContent(parsedContent);
       } catch (e) {
         console.error("Failed to parse version page content from localStorage", e);
         setContent(defaultContent);
@@ -79,7 +80,7 @@ export default function VersionPage() {
                 "Learner v1.0" is not just a number — it represents:
               </p>
               <ul className="space-y-3 text-muted-foreground list-disc list-inside">
-                {content.philosophyText.split('\n').map((item, i) => <li key={i}>{item}</li>)}
+                {(content.philosophyText || '').split('\n').map((item, i) => item && <li key={i}>{item}</li>)}
               </ul>
             </section>
 
@@ -97,7 +98,7 @@ export default function VersionPage() {
                         </CardHeader>
                         <CardContent>
                            <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-                               {content.coreFeatures.split('\n').map((item, i) => <li key={i}>{item}</li>)}
+                               {(content.coreFeatures || '').split('\n').map((item, i) => item && <li key={i}>{item}</li>)}
                            </ul>
                         </CardContent>
                     </Card>
@@ -110,7 +111,7 @@ export default function VersionPage() {
                         </CardHeader>
                         <CardContent>
                            <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-                               {content.upcomingFeatures.split('\n').map((item, i) => <li key={i}>{item}</li>)}
+                               {(content.upcomingFeatures || '').split('\n').map((item, i) => item && <li key={i}>{item}</li>)}
                            </ul>
                         </CardContent>
                     </Card>
@@ -126,3 +127,5 @@ export default function VersionPage() {
     </div>
   );
 }
+
+  

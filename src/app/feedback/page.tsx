@@ -59,7 +59,8 @@ export default function FeedbackPage() {
     const storedContent = localStorage.getItem("feedbackPageContent");
     if (storedContent) {
       try {
-        setContent(JSON.parse(storedContent));
+        const parsedContent = JSON.parse(storedContent);
+        setContent(parsedContent);
       } catch (e) {
         console.error("Failed to parse feedback page content from localStorage", e);
         setContent(defaultContent);
@@ -199,3 +200,5 @@ NexaAI Feedback System
     </div>
   );
 }
+
+  

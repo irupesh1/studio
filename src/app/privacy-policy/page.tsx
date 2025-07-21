@@ -25,7 +25,8 @@ export default function PrivacyPolicy() {
     const storedContent = localStorage.getItem("privacyPageContent");
     if (storedContent) {
       try {
-        setContent(JSON.parse(storedContent));
+        const parsedContent = JSON.parse(storedContent);
+        setContent(parsedContent);
       } catch (e) {
         console.error("Failed to parse privacy page content from localStorage", e);
         setContent(defaultContent);
@@ -59,18 +60,14 @@ export default function PrivacyPolicy() {
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">1. Information We Collect</h2>
                 <div className="leading-relaxed text-muted-foreground whitespace-pre-wrap">
-                    {content.infoCollection.split('\n').map((line, index) => (
-                        <p key={index}>{line.startsWith('-') ? <span className="pl-4">{line}</span> : line}</p>
-                    ))}
+                    {(content.infoCollection || '').split('\n').map((line, index) => line && <p key={index}>{line}</p>)}
                 </div>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">2. How We Use Your Data</h2>
                 <div className="leading-relaxed text-muted-foreground whitespace-pre-wrap">
-                    {content.dataUsage.split('\n').map((line, index) => (
-                        <p key={index}>{line.startsWith('-') ? <span className="pl-4">{line}</span> : line}</p>
-                    ))}
+                    {(content.dataUsage || '').split('\n').map((line, index) => line && <p key={index}>{line}</p>)}
                 </div>
             </div>
 
@@ -159,3 +156,5 @@ export default function PrivacyPolicy() {
     </div>
   );
 }
+
+  

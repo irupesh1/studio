@@ -63,7 +63,8 @@ export default function SurveyPage() {
     const storedContent = localStorage.getItem("surveyPageContent");
     if (storedContent) {
       try {
-        setContent(JSON.parse(storedContent));
+        const parsedContent = JSON.parse(storedContent);
+        setContent(parsedContent);
       } catch (e) {
         console.error("Failed to parse survey page content from localStorage", e);
         setContent(defaultContent);
@@ -261,3 +262,5 @@ export default function SurveyPage() {
     </div>
   );
 }
+
+  

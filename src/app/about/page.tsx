@@ -34,7 +34,8 @@ export default function AboutPage() {
     const storedContent = localStorage.getItem("aboutPageContent");
     if (storedContent) {
       try {
-        setContent(JSON.parse(storedContent));
+        const parsedContent = JSON.parse(storedContent);
+        setContent(parsedContent);
       } catch (e) {
         console.error("Failed to parse about page content from localStorage", e);
         setContent(defaultContent);
@@ -147,3 +148,5 @@ export default function AboutPage() {
     </div>
   );
 }
+
+  
