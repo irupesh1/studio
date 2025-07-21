@@ -158,7 +158,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                           </Button>
                         )}
                       </div>
-                      <div className="prose text-[10px] max-w-none text-foreground whitespace-pre-wrap">
+                      <div className="prose text-[13px] max-w-none text-foreground whitespace-pre-wrap">
                           {message.content}
                       </div>
                   </div>
