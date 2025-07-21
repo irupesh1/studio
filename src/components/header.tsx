@@ -11,7 +11,7 @@ interface HeaderProps {
 
 export function Header({ onSidebarToggle }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between p-4 border-b md:justify-end">
+    <header className="flex items-center justify-between p-2 border-b md:justify-end">
       <Button
         variant="ghost"
         size="icon"
