@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
         <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center gap-4 p-6">
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="rounded-full">
+              <Button variant="outline" size="icon" className="rounded-full" aria-label="Back to chat">
                 <ArrowLeft className="h-4 w-4" />
                 <span className="sr-only">Back</span>
               </Button>

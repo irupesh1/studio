@@ -1,3 +1,4 @@
+
 'use server';
 
 import { generateResponse } from '@/ai/flows/generate-response';
@@ -7,9 +8,13 @@ export async function sendMessage(history: Message[]): Promise<Message> {
   try {
     const latestMessage = history[history.length - 1];
 
+    if (!latestMessage || latestMessage.role !== 'user') {
+      throw new Error('Invalid history: Last message must be from the user.');
+    }
+
     const { response } = await generateResponse({
       history: history.map(({id, ...rest}) => rest),
-      sentiment: 'neutral', // No longer analyzing sentiment, so passing a default.
+      sentiment: 'neutral', 
     });
 
     return {
@@ -22,7 +27,7 @@ export async function sendMessage(history: Message[]): Promise<Message> {
     return {
       id: Date.now().toString(),
       role: 'assistant',
-      content: "Sorry, I'm having trouble connecting. Please try again later.",
+      content: "I'm sorry, but I encountered an issue while trying to respond. Please try your request again in a moment.",
     };
   }
 }

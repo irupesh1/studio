@@ -37,7 +37,7 @@ export default function AboutPage() {
         <Card className="overflow-hidden shadow-lg rounded-2xl">
           <CardHeader className="flex flex-row items-center gap-4 p-6 bg-card border-b">
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="rounded-full h-10 w-10">
+              <Button variant="outline" size="icon" className="rounded-full h-10 w-10" aria-label="Back to chat">
                 <ArrowLeft className="h-5 w-5" />
                 <span className="sr-only">Back</span>
               </Button>

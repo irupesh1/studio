@@ -90,7 +90,7 @@ NexaAI Feedback System
         <Card className="overflow-hidden shadow-lg rounded-xl">
           <CardHeader className="flex flex-row items-center gap-4 p-4 bg-card border-b">
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="rounded-full h-8 w-8">
+              <Button variant="outline" size="icon" className="rounded-full h-8 w-8" aria-label="Back to chat">
                 <ArrowLeft className="h-4 w-4" />
                 <span className="sr-only">Back</span>
               </Button>

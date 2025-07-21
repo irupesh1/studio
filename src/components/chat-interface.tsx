@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef, useEffect, type FormEvent } from 'react';
+import React, { useState, useRef, useEffect, type FormEvent } from 'react';
 import { sendMessage } from '@/app/actions';
 import type { Message } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -32,6 +32,22 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleCopyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: 'Copied to clipboard!',
+        description: 'The response has been copied.',
+      });
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to copy to clipboard.',
+      });
+    });
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -110,7 +126,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     </div>
                     {message.role === 'assistant' && (
                        <div className="flex items-center gap-4 mt-3">
-                          <ClipboardCopy className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
+                          <ClipboardCopy onClick={() => handleCopyToClipboard(message.content)} className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
                           <ThumbsUp className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
                           <ThumbsDown className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
                           <Volume2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
@@ -168,5 +184,3 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     </div>
   );
 }
-
-    
