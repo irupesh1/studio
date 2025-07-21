@@ -150,6 +150,9 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     <Send className="h-5 w-5" />
                 </Button>
             </form>
+            <p className="text-xs text-center text-muted-foreground mt-2">
+              NexaAI can make mistakes, so double-check it
+            </p>
           </div>
       </div>
     </div>
