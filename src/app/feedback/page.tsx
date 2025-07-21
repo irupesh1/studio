@@ -29,6 +29,7 @@ const feedbackFormSchema = z.object({
   feedback: z.string().min(10, {
     message: "Feedback must be at least 10 characters.",
   }),
+  suggestedFeatures: z.string().optional(),
 });
 
 type FeedbackFormValues = z.infer<typeof feedbackFormSchema>;
@@ -36,6 +37,7 @@ type FeedbackFormValues = z.infer<typeof feedbackFormSchema>;
 const defaultValues: Partial<FeedbackFormValues> = {
   name: "",
   feedback: "",
+  suggestedFeatures: "",
 };
 
 export default function FeedbackPage() {
@@ -98,6 +100,23 @@ export default function FeedbackPage() {
                       <FormControl>
                         <Textarea
                           placeholder="Tell us what you think..."
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="suggestedFeatures"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Suggest Features (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="What new features would you like to see in NexaAI?"
                           className="resize-none"
                           {...field}
                         />
