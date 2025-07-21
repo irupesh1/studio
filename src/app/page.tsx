@@ -12,8 +12,14 @@ import { Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 
+const initialMessage: Message = {
+  id: 'initial-message',
+  role: 'assistant',
+  content: "Hello there! 👋 How can I help you today? 😊",
+};
+
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [feedbackPromptShown, setFeedbackPromptShown] = useState(false);
   const { toast } = useToast();
@@ -33,14 +39,14 @@ export default function Home() {
           ),
         });
         setFeedbackPromptShown(true);
-      }, 30000); // 30 seconds
+      }, 30000); 
 
       return () => clearTimeout(timer);
     }
   }, [feedbackPromptShown, toast]);
 
   const startNewChat = () => {
-    setMessages([]);
+    setMessages([initialMessage]);
     setIsSidebarOpen(false); 
   };
 
