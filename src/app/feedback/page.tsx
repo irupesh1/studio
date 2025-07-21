@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -40,8 +41,32 @@ const defaultValues: Partial<FeedbackFormValues> = {
   suggestedFeatures: "",
 };
 
+const defaultContent = {
+  title: "Submit Feedback",
+  description: "We'd love to hear your thoughts on NexaAI.",
+  nameLabel: "Name",
+  feedbackLabel: "Feedback",
+  featuresLabel: "Suggest Features (Optional)",
+  surveyLinkText: "Quick Survey",
+};
+
+
 export default function FeedbackPage() {
   const { toast } = useToast();
+  const [content, setContent] = useState(defaultContent);
+
+  useEffect(() => {
+    const storedContent = localStorage.getItem("feedbackPageContent");
+    if (storedContent) {
+      try {
+        setContent(JSON.parse(storedContent));
+      } catch (e) {
+        console.error("Failed to parse feedback page content from localStorage", e);
+        setContent(defaultContent);
+      }
+    }
+  }, []);
+
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackFormSchema),
     defaultValues,
@@ -96,9 +121,9 @@ NexaAI Feedback System
               </Button>
             </Link>
             <div>
-              <CardTitle className="text-xl font-semibold">Submit Feedback</CardTitle>
+              <CardTitle className="text-xl font-semibold">{content.title}</CardTitle>
               <CardDescription className="mt-1 text-sm">
-                We'd love to hear your thoughts on NexaAI.
+                {content.description}
               </CardDescription>
             </div>
           </CardHeader>
@@ -110,7 +135,7 @@ NexaAI Feedback System
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-medium">Name</FormLabel>
+                      <FormLabel className="font-medium">{content.nameLabel}</FormLabel>
                       <FormControl>
                         <Input placeholder="Your Name" {...field} className="text-sm" />
                       </FormControl>
@@ -123,7 +148,7 @@ NexaAI Feedback System
                   name="feedback"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-medium">Feedback</FormLabel>
+                      <FormLabel className="font-medium">{content.feedbackLabel}</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Tell us what you think..."
@@ -141,7 +166,7 @@ NexaAI Feedback System
                   name="suggestedFeatures"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-medium">Suggest Features (Optional)</FormLabel>
+                      <FormLabel className="font-medium">{content.featuresLabel}</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="What new features would you like to see in NexaAI?"
@@ -160,7 +185,7 @@ NexaAI Feedback System
                 <div className="flex items-center justify-center gap-2">
                   <p className="text-sm text-muted-foreground">Have more time?</p>
                    <Link href="/feedback/survey" className="text-sm text-primary underline-offset-4 hover:underline">
-                      Quick Survey
+                      {content.surveyLinkText}
                     </Link>
                 </div>
               </CardContent>

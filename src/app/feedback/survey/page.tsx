@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
@@ -45,13 +45,31 @@ const surveyFormSchema = z.object({
 
 type SurveyFormValues = z.infer<typeof surveyFormSchema>;
 
+const defaultContent = {
+  title: "Quick Survey",
+  description: "Your feedback helps us improve NexaAI for everyone.",
+};
+
 export default function SurveyPage() {
   const { toast } = useToast();
+  const [content, setContent] = useState(defaultContent);
   const form = useForm<SurveyFormValues>({
     resolver: zodResolver(surveyFormSchema),
   });
 
   const [rating, setRating] = useState(0);
+
+  useEffect(() => {
+    const storedContent = localStorage.getItem("surveyPageContent");
+    if (storedContent) {
+      try {
+        setContent(JSON.parse(storedContent));
+      } catch (e) {
+        console.error("Failed to parse survey page content from localStorage", e);
+        setContent(defaultContent);
+      }
+    }
+  }, []);
 
   function onSubmit(data: SurveyFormValues) {
     const surveyData = { ...data, overallExperience: rating || 'Not Rated' };
@@ -153,9 +171,9 @@ export default function SurveyPage() {
               </Button>
             </Link>
             <div>
-              <CardTitle className="text-2xl font-bold tracking-tight">Quick Survey</CardTitle>
+              <CardTitle className="text-2xl font-bold tracking-tight">{content.title}</CardTitle>
               <CardDescription className="mt-1">
-                Your feedback helps us improve NexaAI for everyone.
+                {content.description}
               </CardDescription>
             </div>
           </CardHeader>

@@ -104,6 +104,22 @@ const privacyPageSchema = z.object({
 });
 type PrivacyPageValues = z.infer<typeof privacyPageSchema>;
 
+const feedbackPageSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  nameLabel: z.string(),
+  feedbackLabel: z.string(),
+  featuresLabel: z.string(),
+  surveyLinkText: z.string(),
+});
+type FeedbackPageValues = z.infer<typeof feedbackPageSchema>;
+
+const surveyPageSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+});
+type SurveyPageValues = z.infer<typeof surveyPageSchema>;
+
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -279,6 +295,34 @@ export default function AdminDashboardPage() {
         }
     });
 
+  const feedbackPageForm = useForm<FeedbackPageValues>({
+    resolver: zodResolver(feedbackPageSchema),
+    effects: (form) => {
+      const stored = localStorage.getItem("feedbackPageContent");
+      if (stored) form.reset(JSON.parse(stored));
+      else form.reset({
+        title: "Submit Feedback",
+        description: "We'd love to hear your thoughts on NexaAI.",
+        nameLabel: "Name",
+        feedbackLabel: "Feedback",
+        featuresLabel: "Suggest Features (Optional)",
+        surveyLinkText: "Quick Survey",
+      });
+    }
+  });
+
+  const surveyPageForm = useForm<SurveyPageValues>({
+      resolver: zodResolver(surveyPageSchema),
+      effects: (form) => {
+          const stored = localStorage.getItem("surveyPageContent");
+          if(stored) form.reset(JSON.parse(stored));
+          else form.reset({
+              title: "Quick Survey",
+              description: "Your feedback helps us improve NexaAI for everyone.",
+          })
+      }
+  });
+
   const handleCredentialsSubmit = (data: CredentialsFormValues) => {
     localStorage.setItem("adminUsername", data.username);
     localStorage.setItem("adminPassword", data.password);
@@ -339,6 +383,16 @@ export default function AdminDashboardPage() {
     const handlePrivacyPageSubmit = (data: PrivacyPageValues) => {
         localStorage.setItem("privacyPageContent", JSON.stringify(data));
         toast({ title: "Success", description: "Privacy Policy content updated." });
+    };
+
+    const handleFeedbackPageSubmit = (data: FeedbackPageValues) => {
+        localStorage.setItem("feedbackPageContent", JSON.stringify(data));
+        toast({ title: "Success", description: "Feedback Page content updated." });
+    };
+
+    const handleSurveyPageSubmit = (data: SurveyPageValues) => {
+        localStorage.setItem("surveyPageContent", JSON.stringify(data));
+        toast({ title: "Success", description: "Survey Page content updated." });
     };
 
   const handleLogout = () => {
@@ -534,6 +588,34 @@ export default function AdminDashboardPage() {
                                         <FormField control={privacyPageForm.control} name="localStorage" render={({ field }) => (<FormItem><FormLabel>Local Storage Policy</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl></FormItem>)} />
                                         <FormField control={privacyPageForm.control} name="contactEmail" render={({ field }) => (<FormItem><FormLabel>Contact Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl></FormItem>)} />
                                         <Button type="submit">Update Privacy Policy</Button>
+                                    </form>
+                                </Form>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="feedback-page">
+                            <AccordionTrigger><h4 className="font-semibold">Feedback Page</h4></AccordionTrigger>
+                            <AccordionContent className="space-y-4 pt-4">
+                                <Form {...feedbackPageForm}>
+                                    <form onSubmit={feedbackPageForm.handleSubmit(handleFeedbackPageSubmit)} className="space-y-4">
+                                        <FormField control={feedbackPageForm.control} name="title" render={({ field }) => (<FormItem><FormLabel>Page Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={feedbackPageForm.control} name="description" render={({ field }) => (<FormItem><FormLabel>Page Description</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={feedbackPageForm.control} name="nameLabel" render={({ field }) => (<FormItem><FormLabel>Name Input Label</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={feedbackPageForm.control} name="feedbackLabel" render={({ field }) => (<FormItem><FormLabel>Feedback Input Label</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={feedbackPageForm.control} name="featuresLabel" render={({ field }) => (<FormItem><FormLabel>Suggested Features Label</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={feedbackPageForm.control} name="surveyLinkText" render={({ field }) => (<FormItem><FormLabel>Survey Link Text</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <Button type="submit">Update Feedback Page</Button>
+                                    </form>
+                                </Form>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="survey-page">
+                            <AccordionTrigger><h4 className="font-semibold">Quick Survey Page</h4></AccordionTrigger>
+                            <AccordionContent className="space-y-4 pt-4">
+                                <Form {...surveyPageForm}>
+                                    <form onSubmit={surveyPageForm.handleSubmit(handleSurveyPageSubmit)} className="space-y-4">
+                                        <FormField control={surveyPageForm.control} name="title" render={({ field }) => (<FormItem><FormLabel>Page Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <FormField control={surveyPageForm.control} name="description" render={({ field }) => (<FormItem><FormLabel>Page Description</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+                                        <Button type="submit">Update Survey Page</Button>
                                     </form>
                                 </Form>
                             </AccordionContent>
