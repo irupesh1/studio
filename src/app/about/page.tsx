@@ -1,7 +1,5 @@
 
-import { ArrowLeft, BrainCircuit, Code, Leaf, Languages, Rocket } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { BrainCircuit, Code, Leaf, Languages, Rocket } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
@@ -40,12 +38,6 @@ export default function AboutPage() {
         <Card className="shadow-2xl rounded-xl border-0 overflow-hidden">
           <CardHeader className="p-8 bg-card">
             <div className="flex items-center gap-4 flex-nowrap whitespace-nowrap">
-              <Link href="/" passHref>
-                <Button variant="outline" size="icon" className="h-8 w-8 rounded-full">
-                  <ArrowLeft className="h-4 w-4" />
-                  <span className="sr-only">Back to Chat</span>
-                </Button>
-              </Link>
               <CardTitle className="text-3xl font-bold tracking-tight">About NexaAI</CardTitle>
             </div>
             <p className="text-muted-foreground mt-4">
