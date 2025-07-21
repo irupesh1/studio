@@ -151,7 +151,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                 </Button>
             </form>
             <div className="flex justify-center items-center gap-2 mt-2">
-                <p className="text-xs text-center text-muted-foreground font-bold">
+                <p className="text-[10px] text-center text-muted-foreground font-bold">
                 NexaAI can make mistakes, so double-check it
                 </p>
                 <X className="w-3 h-3 text-muted-foreground cursor-pointer" />
