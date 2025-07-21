@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Send, Bot, Loader2, Square, ThumbsUp, ThumbsDown, RefreshCw, ClipboardCopy, Share2, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { TypingAnimation } from './typing-animation';
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -138,7 +139,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     )}
                   >
                     <div className="prose text-[13px] max-w-none text-foreground whitespace-pre-wrap">
-                      {message.content}
+                      {message.role === 'assistant' ? <TypingAnimation text={message.content} /> : message.content}
                     </div>
 
                     {message.role === 'assistant' && (
