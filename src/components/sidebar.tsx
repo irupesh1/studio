@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Plus, Shield, MessageSquare, ArrowUpRight } from "lucide-react";
+import { Plus, Shield, MessageSquare, ArrowUpRight, Info } from "lucide-react";
 import Link from "next/link";
 
 interface SidebarProps {
@@ -50,13 +50,14 @@ export function Sidebar({ startNewChat }: SidebarProps) {
               Feedback
           </Button>
         </Link>
-        <Button variant="secondary" className="w-full justify-center rounded-full">
-            About NexaAI
-            <ArrowUpRight className="ml-2 h-4 w-4" />
-        </Button>
+        <Link href="/about" passHref>
+          <Button variant="secondary" className="w-full justify-center rounded-full">
+            <Info className="mr-2 h-4 w-4" />
+              About NexaAI
+              <ArrowUpRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
       </div>
     </aside>
   );
 }
-
-    
