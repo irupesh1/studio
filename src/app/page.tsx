@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from 'next/link';
 import { ChatInterface } from "@/components/chat-interface";
 import {
   SidebarProvider,
@@ -43,10 +44,14 @@ export default function Home() {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Privacy Policy">
-                <Shield />
-                <span>Privacy Policy</span>
-              </SidebarMenuButton>
+              <Link href="/privacy" passHref>
+                  <SidebarMenuButton asChild tooltip="Privacy Policy">
+                    <span>
+                        <Shield />
+                        <span>Privacy Policy</span>
+                    </span>
+                  </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip="Feedback">
