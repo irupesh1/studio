@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, Loader2, Square } from 'lucide-react';
+import { Send, Bot, User, Loader2, Square, PlayCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,6 +22,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
 
   const scrollToBottom = () => {
     if (viewportRef.current) {
@@ -83,6 +85,26 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const handleStopGenerating = () => {
     window.location.reload();
   };
+  
+  const handlePlayAudio = (message: Message) => {
+    if (audioRef.current) {
+      if (playingMessageId === message.id) {
+        audioRef.current.pause();
+        setPlayingMessageId(null);
+        return;
+      }
+    }
+
+    if (message.audioUrl) {
+      const audio = new Audio(message.audioUrl);
+      audioRef.current = audio;
+      audio.play();
+      setPlayingMessageId(message.id);
+      audio.onended = () => {
+        setPlayingMessageId(null);
+      };
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -119,10 +141,22 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                       </Avatar>
                   )}
                   <div className="flex-1">
-                      <p className="font-semibold text-sm">
-                      {message.role === 'assistant' ? 'NexaAI' : 'You'}
-                      </p>
-                      <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
+                      <div className="flex items-center justify-between">
+                        <p className="font-semibold text-sm">
+                          {message.role === 'assistant' ? 'NexaAI' : 'You'}
+                        </p>
+                        {message.role === 'assistant' && message.audioUrl && (
+                           <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => handlePlayAudio(message)}
+                          >
+                            <PlayCircle className={cn("h-5 w-5", playingMessageId === message.id ? "text-primary" : "")} />
+                          </Button>
+                        )}
+                      </div>
+                      <div className="prose text-xs max-w-none text-foreground whitespace-pre-wrap">
                           {message.content}
                       </div>
                   </div>
