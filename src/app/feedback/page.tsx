@@ -49,7 +49,7 @@ export default function FeedbackPage() {
   });
 
   function onSubmit(data: FeedbackFormValues) {
-    const subject = "Feedback from NexaAI User";
+    const subject = "Feedback";
     const body = `Hello,
 
 Here is some feedback from a user:
