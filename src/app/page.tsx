@@ -37,7 +37,7 @@ export default function Home() {
       </Sidebar>
       <SidebarInset>
         <div className="flex flex-col h-screen">
-          <header className="py-1.5 px-2 border-b flex items-center justify-between">
+          <header className="py-0.5 px-2 border-b flex items-center justify-between">
             <SidebarTrigger className="md:hidden" />
             <div className="md:hidden"></div> {/* Empty div to balance the flex layout */}
             <div className="flex-1" />
