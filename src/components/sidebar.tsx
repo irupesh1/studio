@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Plus, Shield, MessageSquare, Info } from "lucide-react";
+import { Plus, Shield, MessageSquare, Info, ArrowUpRight } from "lucide-react";
 
 interface SidebarProps {
   startNewChat: () => void;
@@ -45,9 +45,9 @@ export function Sidebar({ startNewChat }: SidebarProps) {
             <MessageSquare className="mr-2 h-4 w-4" />
             Feedback
         </Button>
-        <Button variant="ghost" className="w-full justify-start">
-            <Info className="mr-2 h-4 w-4" />
+        <Button variant="secondary" className="w-full justify-center rounded-full">
             About NexaAI
+            <ArrowUpRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </aside>
