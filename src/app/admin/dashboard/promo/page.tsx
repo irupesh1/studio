@@ -125,7 +125,7 @@ export default function PromoPage() {
                 <div className="bg-muted/30 p-4 rounded-lg flex items-center justify-center min-h-[400px]">
                      <div className="relative bg-card rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
                         <div className="absolute top-2 right-2 rounded-full h-8 w-8 bg-black/10 flex items-center justify-center">
-                            <Trash2 className="h-5 w-5 text-white/50" />
+                            <X className="h-5 w-5 text-white/50" />
                             <span className="sr-only">Close button placeholder</span>
                         </div>
                         <div className="space-y-4">
@@ -157,5 +157,3 @@ export default function PromoPage() {
     </div>
   );
 }
-
-    
