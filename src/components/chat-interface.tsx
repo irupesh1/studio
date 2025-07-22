@@ -2,12 +2,12 @@
 "use client";
 
 import React, { useState, useRef, useEffect, type FormEvent } from 'react';
-import { sendMessage, regenerateResponse } from '@/app/actions';
+import { sendMessage, regenerateResponse, getAudioForText } from '@/app/actions';
 import type { Message } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Loader2, ClipboardCopy, ThumbsUp, ThumbsDown, Volume2, Share2, RefreshCw, X } from 'lucide-react';
+import { Send, Loader2, ClipboardCopy, ThumbsUp, ThumbsDown, Volume2, Share2, RefreshCw, X, Play, Pause } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
@@ -55,6 +55,9 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [chatAvatar, setChatAvatar] = useState<string | null>(null);
   const [chatBgImage, setChatBgImage] = useState<string | null>(null);
   const { themeSettings } = useThemeContext();
+
+  const [audioState, setAudioState] = useState<{ [key: string]: 'playing' | 'paused' | 'stopped' }>({});
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -115,12 +118,69 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     });
   };
 
-  const handlePlayAudio = (message: Message) => {
-    toast({
-      title: 'Coming Soon',
-      description: 'TTS feature is coming soon.',
-    });
+  const handlePlayAudio = async (message: Message) => {
+    // If another audio is playing, stop it
+    if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+        // Reset all other audio states
+        const newAudioState: { [key: string]: 'playing' | 'paused' | 'stopped' } = {};
+        Object.keys(audioState).forEach(id => newAudioState[id] = 'stopped');
+        setAudioState(newAudioState);
+    }
+    
+    // If the clicked message is currently playing, pause it
+    if (audioState[message.id] === 'playing' && audioRef.current) {
+        audioRef.current.pause();
+        setAudioState(prev => ({ ...prev, [message.id]: 'paused' }));
+        return;
+    }
+
+    // If the clicked message is paused, resume it
+    if (audioState[message.id] === 'paused' && audioRef.current) {
+        audioRef.current.play();
+        setAudioState(prev => ({ ...prev, [message.id]: 'playing' }));
+        return;
+    }
+
+    // If the message already has audio data, play it
+    if (message.audioDataUri) {
+        const audio = new Audio(message.audioDataUri);
+        audioRef.current = audio;
+        audio.play();
+        setAudioState(prev => ({ ...prev, [message.id]: 'playing' }));
+        audio.onended = () => {
+            setAudioState(prev => ({ ...prev, [message.id]: 'stopped' }));
+        };
+        return;
+    }
+
+    // Otherwise, generate the audio
+    try {
+      const audioDataUri = await getAudioForText(message.content);
+      if (audioDataUri) {
+        setMessages(prev =>
+          prev.map(m =>
+            m.id === message.id ? { ...m, audioDataUri } : m
+          )
+        );
+        const audio = new Audio(audioDataUri);
+        audioRef.current = audio;
+        audio.play();
+        setAudioState(prev => ({ ...prev, [message.id]: 'playing' }));
+        audio.onended = () => {
+            setAudioState(prev => ({ ...prev, [message.id]: 'stopped' }));
+        };
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to generate audio.',
+      });
+    }
   };
+
 
   const handleRegenerate = async () => {
     if (isLoading) return;
@@ -208,8 +268,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                   <h1 
                     className="text-5xl font-bold text-foreground" 
                     style={{ 
-                        fontFamily: welcomeFontFamily,
-                        color: welcomeDescriptionColor || undefined
+                        fontFamily: welcomeFontFamily
                     }}
                   >
                     {welcomeTitle}
@@ -281,7 +340,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                           <button aria-label="Like response"><ThumbsUp className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           <button aria-label="Dislike response"><ThumbsDown className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           <button onClick={() => handlePlayAudio(message)} className="disabled:opacity-50" aria-label="Play audio">
-                            <Volume2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
+                             {audioState[message.id] === 'playing' ? <Pause className="w-4 h-4 text-primary" /> : <Volume2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />}
                           </button>
                            <button aria-label="Share response"><Share2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           {index === messages.length - 1 && !isLoading && (
