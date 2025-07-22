@@ -49,7 +49,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [welcomeTitle, setWelcomeTitle] = useState("Nexa AI");
   const [welcomeDescription, setWelcomeDescription] = useState("Your intelligent assistant for everything.");
   const [welcomeFontFamily, setWelcomeFontFamily] = useState("Inter");
-  const [welcomeDescriptionColor, setWelcomeDescriptionColor] = useState("");
   const [shortcutButtons, setShortcutButtons] = useState<ShortcutButton[]>([]);
   const [hoveredButton, setHoveredButton] = useState<number | null>(null);
   const [chatAvatar, setChatAvatar] = useState<string | null>(null);
@@ -75,7 +74,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     const savedTitle = localStorage.getItem("welcomeTitle");
     const savedDescription = localStorage.getItem("welcomeDescription");
     const savedFont = localStorage.getItem("welcomeFontFamily");
-    const savedDescriptionColor = localStorage.getItem("welcomeDescriptionColor");
     const savedButtons = localStorage.getItem("shortcutButtons");
     const savedAvatar = localStorage.getItem("chatAvatar");
     const savedBgImage = localStorage.getItem("chatBgImage");
@@ -83,7 +81,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     if (savedTitle) setWelcomeTitle(savedTitle);
     if (savedDescription) setWelcomeDescription(savedDescription);
     if (savedFont) setWelcomeFontFamily(savedFont);
-    if (savedDescriptionColor) setWelcomeDescriptionColor(savedDescriptionColor);
     if (savedAvatar) setChatAvatar(savedAvatar);
     if (savedBgImage) setChatBgImage(savedBgImage);
     if (savedButtons) {
@@ -252,7 +249,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   };
   
   const chatAreaStyle: React.CSSProperties = {
-      backgroundColor: themeSettings.messageAreaBg ? themeSettings.messageAreaBg : 'var(--custom-message-area-bg)',
+      backgroundColor: themeSettings.messageAreaBg || 'hsl(var(--background))',
       backgroundImage: chatBgImage ? `url(${chatBgImage})` : 'none',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -283,7 +280,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     className="mt-4 text-lg text-muted-foreground" 
                     style={{ 
                         fontFamily: welcomeFontFamily,
-                        color: welcomeDescriptionColor || undefined
                     }}
                   >
                     {welcomeDescription}

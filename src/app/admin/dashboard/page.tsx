@@ -56,7 +56,6 @@ export default function AdminDashboardPage() {
         "welcomeTitle",
         "welcomeDescription",
         "welcomeFontFamily",
-        "welcomeDescriptionColor",
         "mainLogo",
         "chatAvatar",
         "aboutPageAvatar",

@@ -24,7 +24,6 @@ type PersonalizationFormValues = z.infer<typeof personalizationFormSchema>;
 
 const appearanceFormSchema = z.object({
     fontFamily: z.string(),
-    descriptionColor: z.string(),
 });
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
@@ -64,13 +63,10 @@ export default function CustomizationPage() {
     resolver: zodResolver(appearanceFormSchema),
     defaultValues: {
       fontFamily: "Inter",
-      descriptionColor: "#6B7280",
     },
     effects: (form) => {
         const storedFont = localStorage.getItem("welcomeFontFamily");
-        const storedDescriptionColor = localStorage.getItem("welcomeDescriptionColor");
         if(storedFont) form.setValue("fontFamily", storedFont);
-        if(storedDescriptionColor) form.setValue("descriptionColor", storedDescriptionColor);
     }
   });
   
@@ -97,7 +93,6 @@ export default function CustomizationPage() {
 
   const handleAppearanceSubmit = (data: AppearanceFormValues) => {
     localStorage.setItem("welcomeFontFamily", data.fontFamily);
-    localStorage.setItem("welcomeDescriptionColor", data.descriptionColor);
     toast({ title: "Success", description: "Appearance settings updated." });
   };
   
@@ -158,7 +153,6 @@ export default function CustomizationPage() {
                             <h3 className="font-semibold text-lg flex items-center gap-2"><Palette/> Appearance</h3>
                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <FormField control={appearanceForm.control} name="fontFamily" render={({ field }) => (<FormItem><FormLabel>Font Family</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select a font" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Inter">Inter</SelectItem><SelectItem value="Roboto">Roboto</SelectItem><SelectItem value="Lato">Lato</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
-                                <FormField control={appearanceForm.control} name="descriptionColor" render={({ field }) => (<FormItem><FormLabel>Welcome Description Color</FormLabel><FormControl><Input type="color" {...field} /></FormControl><FormMessage /></FormItem>)} />
                             </div>
                             <Button type="submit">Update Appearance</Button>
                         </form>
