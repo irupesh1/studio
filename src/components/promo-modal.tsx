@@ -14,6 +14,8 @@ interface PromoData {
   media?: string;
   closeButtonDelay?: number;
   allowOutsideClick?: boolean;
+  imageWidth?: number;
+  fontSize?: number;
 }
 
 export function PromoModal() {
@@ -32,7 +34,6 @@ export function PromoModal() {
         const startDate = parsedData.startDate ? new Date(parsedData.startDate) : null;
         const endDate = parsedData.endDate ? new Date(parsedData.endDate) : null;
 
-        // Set end of day for endDate
         if(endDate) {
             endDate.setHours(23, 59, 59, 999);
         }
@@ -82,7 +83,7 @@ export function PromoModal() {
     >
       <div 
         className="relative bg-card rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 text-center"
-        onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to the overlay
+        onClick={(e) => e.stopPropagation()}
       >
         {showCloseButton && (
           <Button
@@ -98,17 +99,25 @@ export function PromoModal() {
 
         <div className="space-y-4">
             {promoData.media && (
-                <div className="relative w-full aspect-video rounded-md overflow-hidden mx-auto">
-                    <Image
-                        src={promoData.media}
-                        alt="Promotional media"
-                        layout="fill"
-                        objectFit="contain"
-                    />
+                <div 
+                  className="mx-auto" 
+                  style={{ width: `${promoData.imageWidth ?? 100}%` }}
+                >
+                  <div className="relative w-full aspect-video rounded-md overflow-hidden">
+                      <Image
+                          src={promoData.media}
+                          alt="Promotional media"
+                          layout="fill"
+                          objectFit="contain"
+                      />
+                  </div>
                 </div>
             )}
             {promoData.text && (
-                <p className="text-card-foreground text-base leading-relaxed whitespace-pre-wrap">
+                <p 
+                  className="text-card-foreground leading-relaxed whitespace-pre-wrap"
+                  style={{ fontSize: `${promoData.fontSize ?? 16}px` }}
+                >
                     {promoData.text}
                 </p>
             )}
@@ -118,3 +127,5 @@ export function PromoModal() {
     </div>
   );
 }
+
+    
