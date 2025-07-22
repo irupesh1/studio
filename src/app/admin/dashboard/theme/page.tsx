@@ -1,3 +1,4 @@
+
 "use client";
 
 import { z } from "zod";
@@ -36,15 +37,15 @@ export default function ThemePage() {
             form.reset(parsedTheme);
         } else {
             form.reset({
-                headerBg: "#FFFFFF",
-                headerText: "#000000",
-                messageAreaBg: "#F3F4F6",
-                inputBg: "#FFFFFF",
-                inputBorder: "#E5E7EB",
-                inputText: "#000000",
+                headerBg: "#ffffff",
+                headerText: "#0f172a",
+                messageAreaBg: "#ffffff",
+                inputBg: "#f1f5f9",
+                inputBorder: "#e2e8f0",
+                inputText: "#0f172a",
                 inputPlaceholder: "Ask NexaAI Anything...",
-                sendButtonBg: "#3B82F6",
-                sendButtonIcon: "#FFFFFF",
+                sendButtonBg: "#0f172a",
+                sendButtonIcon: "#f8fafc",
             });
         }
       }
@@ -59,15 +60,15 @@ export default function ThemePage() {
   const handleResetTheme = () => {
     localStorage.removeItem("customTheme");
     themeForm.reset({
-        headerBg: "#FFFFFF",
-        headerText: "#000000",
-        messageAreaBg: "#F3F4F6",
-        inputBg: "#FFFFFF",
-        inputBorder: "#E5E7EB",
-        inputText: "#000000",
+        headerBg: "#ffffff",
+        headerText: "#0f172a",
+        messageAreaBg: "#ffffff",
+        inputBg: "#f1f5f9",
+        inputBorder: "#e2e8f0",
+        inputText: "#0f172a",
         inputPlaceholder: "Ask NexaAI Anything...",
-        sendButtonBg: "#3B82F6",
-        sendButtonIcon: "#FFFFFF",
+        sendButtonBg: "#0f172a",
+        sendButtonIcon: "#f8fafc",
     });
     toast({ title: "Theme Reset", description: "Custom theme has been reset to default." });
     window.dispatchEvent(new Event('theme-updated'));
