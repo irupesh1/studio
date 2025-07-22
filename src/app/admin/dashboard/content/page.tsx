@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useEffect } from "react";
 
 const aboutPageSchema = z.object({
   title: z.string(),
@@ -90,13 +91,15 @@ export default function ContentPage() {
         highlight4Text: "Nexa AI observes and adapts within sessions, offering smarter replies and better context without requiring complex setup or user data collection.",
         quote: "“NexaAI was built to prove that one passionate developer can create something powerful, ethical, and user-friendly without a billion-dollar company behind them.”",
     },
-    effects: (form) => {
-      const storedContent = localStorage.getItem("aboutPageContent");
-      if(storedContent) {
-        form.reset(JSON.parse(storedContent));
-      }
-    }
   });
+
+  useEffect(() => {
+    const storedContent = localStorage.getItem("aboutPageContent");
+    if(storedContent) {
+      aboutPageForm.reset(JSON.parse(storedContent));
+    }
+  }, [aboutPageForm]);
+
 
     const versionPageForm = useForm<VersionPageValues>({
         resolver: zodResolver(versionPageSchema),
@@ -110,11 +113,12 @@ export default function ContentPage() {
             coreFeatures: "Clean, responsive chat interface\nLocal storage for private chat history\nFast and real-time user interaction\nMultilingual support (EN, HI, UR)\nBasic adaptive learning in session",
             upcomingFeatures: "Session memory\nVoice input\nEmotional tone detection"
         },
-        effects: (form) => {
-            const stored = localStorage.getItem("versionPageContent");
-            if(stored) form.reset(JSON.parse(stored));
-        }
     });
+
+    useEffect(() => {
+        const stored = localStorage.getItem("versionPageContent");
+        if(stored) versionPageForm.reset(JSON.parse(stored));
+    }, [versionPageForm]);
 
     const privacyPageForm = useForm<PrivacyPageValues>({
         resolver: zodResolver(privacyPageSchema),
@@ -127,11 +131,12 @@ export default function ContentPage() {
             localStorage: "Your data is not sent to any server or shared with third parties. Data is stored only in your browser’s local storage and is used exclusively by NexaAI on your device. Once you refresh, close, or leave the page, all stored conversations are automatically deleted.",
             contactEmail: "ibefikra1@gmail.com"
         },
-        effects: (form) => {
-            const stored = localStorage.getItem("privacyPageContent");
-            if(stored) form.reset(JSON.parse(stored));
-        }
     });
+
+    useEffect(() => {
+        const stored = localStorage.getItem("privacyPageContent");
+        if(stored) privacyPageForm.reset(JSON.parse(stored));
+    }, [privacyPageForm]);
 
   const feedbackPageForm = useForm<FeedbackPageValues>({
     resolver: zodResolver(feedbackPageSchema),
@@ -143,11 +148,12 @@ export default function ContentPage() {
         featuresLabel: "Suggest Features (Optional)",
         surveyLinkText: "Quick Survey",
     },
-    effects: (form) => {
-      const stored = localStorage.getItem("feedbackPageContent");
-      if (stored) form.reset(JSON.parse(stored));
-    }
   });
+
+  useEffect(() => {
+    const stored = localStorage.getItem("feedbackPageContent");
+    if (stored) feedbackPageForm.reset(JSON.parse(stored));
+  }, [feedbackPageForm]);
 
   const surveyPageForm = useForm<SurveyPageValues>({
       resolver: zodResolver(surveyPageSchema),
@@ -155,11 +161,12 @@ export default function ContentPage() {
           title: "Quick Survey",
           description: "Your feedback helps us improve NexaAI for everyone.",
       },
-      effects: (form) => {
-          const stored = localStorage.getItem("surveyPageContent");
-          if(stored) form.reset(JSON.parse(stored));
-      }
   });
+  
+  useEffect(() => {
+      const stored = localStorage.getItem("surveyPageContent");
+      if(stored) surveyPageForm.reset(JSON.parse(stored));
+  }, [surveyPageForm]);
 
     const handleAboutPageSubmit = (data: AboutPageValues) => {
         localStorage.setItem("aboutPageContent", JSON.stringify(data));
@@ -286,5 +293,3 @@ export default function ContentPage() {
     </Card>
   );
 }
-
-  

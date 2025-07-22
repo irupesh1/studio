@@ -16,7 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 
 const promoFormSchema = z.object({
@@ -105,7 +105,7 @@ export default function PromoPage() {
                         <FormField control={form.control} name="startDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Start Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormDescription>When the promotion becomes visible.</FormDescription></FormItem>)} />
                         <FormField control={form.control} name="endDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>End Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormDescription>When the promotion is no longer visible.</FormDescription></FormItem>)} />
                     </div>
-                    <FormField control={form.control} name="text" render={({ field }) => ( <FormItem><FormLabel>Promotional Text</FormLabel><FormControl><Textarea placeholder="Enter your message here..." {...field} /></FormControl></FormItem>)} />
+                    <FormField control={form.control} name="text" render={({ field }) => ( <FormItem><FormLabel>Promotional Text</FormLabel><FormControl><Textarea placeholder="Enter your message here..." {...field} value={field.value || ''} /></FormControl></FormItem>)} />
                     <FormField control={form.control} name="media" render={({ field }) => ( <FormItem><FormLabel>Image / GIF</FormLabel><div className="flex items-center gap-4">{<FormControl><Input type="file" accept="image/*,.gif" onChange={(e) => handleMediaChange(e)} className="max-w-xs"/></FormControl>}{watchedValues.media && (<><Image src={watchedValues.media} alt="Media preview" width={60} height={60} className="rounded-md border object-contain"/><Button type="button" variant="ghost" size="icon" onClick={resetMedia}><Trash2 className="h-4 w-4 text-destructive"/></Button></>)}</div><FormDescription>Upload an image or GIF for the promotion.</FormDescription></FormItem>)} />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="imageWidth" render={({ field }) => (<FormItem><FormLabel>Image Width (%)</FormLabel><FormControl><Input type="number" min="10" max="100" {...field} /></FormControl></FormItem>)} />

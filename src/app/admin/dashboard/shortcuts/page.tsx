@@ -1,3 +1,4 @@
+
 "use client";
 
 import { z } from "zod";
@@ -11,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link as LinkIcon } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
+import { useEffect } from "react";
 
 const shortcutButtonSchema = z.object({
   enabled: z.boolean(),

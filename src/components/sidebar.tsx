@@ -78,7 +78,7 @@ export function Sidebar({ startNewChat }: SidebarProps) {
   };
 
   return (
-    <aside className="w-64 flex flex-col p-4 bg-muted/30 border-r h-full">
+    <aside className="w-60 flex flex-col p-4 bg-muted/30 border-r h-full">
       <div 
         className="flex items-center gap-2 mb-4 cursor-pointer"
         onClick={handleLogoClick}

@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useEffect } from "react";
 
 const credentialsFormSchema = z.object({
   username: z.string().min(4, { message: "Username must be at least 4 characters." }),
@@ -35,13 +36,19 @@ export default function AdminDashboardPage() {
 
   const credentialsForm = useForm<CredentialsFormValues>({
     resolver: zodResolver(credentialsFormSchema),
-    effects: (form) => {
-        const storedUsername = localStorage.getItem("adminUsername");
-        const storedPassword = localStorage.getItem("adminPassword");
-        if(storedUsername) form.setValue("username", storedUsername || "NexaAIadmin");
-        if(storedPassword) form.setValue("password", storedPassword || "NexaAIv1.0");
+    defaultValues: {
+      username: "NexaAIadmin",
+      password: "NexaAIv1.0",
     }
   });
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("adminUsername");
+    const storedPassword = localStorage.getItem("adminPassword");
+    if(storedUsername) credentialsForm.setValue("username", storedUsername);
+    if(storedPassword) credentialsForm.setValue("password", storedPassword);
+  }, [credentialsForm]);
+
 
   const handleCredentialsSubmit = (data: CredentialsFormValues) => {
     localStorage.setItem("adminUsername", data.username);

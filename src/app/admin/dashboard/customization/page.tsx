@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MessageSquare, Palette, Image as ImageIcon, Trash2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 
 const personalizationFormSchema = z.object({
@@ -51,39 +51,43 @@ export default function CustomizationPage() {
       title: "Nexa AI",
       description: "Your intelligent assistant for everything.",
     },
-     effects: (form) => {
-        const storedTitle = localStorage.getItem("welcomeTitle");
-        const storedDescription = localStorage.getItem("welcomeDescription");
-        if(storedTitle) form.setValue("title", storedTitle);
-        if(storedDescription) form.setValue("description", storedDescription);
-    }
   });
+
+  useEffect(() => {
+    const storedTitle = localStorage.getItem("welcomeTitle");
+    const storedDescription = localStorage.getItem("welcomeDescription");
+    if(storedTitle) personalizationForm.setValue("title", storedTitle);
+    if(storedDescription) personalizationForm.setValue("description", storedDescription);
+  }, [personalizationForm]);
 
   const appearanceForm = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
     defaultValues: {
       fontFamily: "Inter",
     },
-    effects: (form) => {
-        const storedFont = localStorage.getItem("welcomeFontFamily");
-        if(storedFont) form.setValue("fontFamily", storedFont);
-    }
   });
+
+  useEffect(() => {
+    const storedFont = localStorage.getItem("welcomeFontFamily");
+    if(storedFont) appearanceForm.setValue("fontFamily", storedFont);
+  }, [appearanceForm]);
   
   const imageForm = useForm<ImageFormValues>({
     resolver: zodResolver(imageFormSchema),
-    effects: (form) => {
-        const mainLogo = localStorage.getItem("mainLogo");
-        const chatAvatar = localStorage.getItem("chatAvatar");
-        const aboutPageAvatar = localStorage.getItem("aboutPageAvatar");
-        const chatBgImage = localStorage.getItem("chatBgImage");
-        
-        if (mainLogo) { form.setValue("mainLogo", mainLogo); setImagePreviews(p => ({...p, mainLogo})); }
-        if (chatAvatar) { form.setValue("chatAvatar", chatAvatar); setImagePreviews(p => ({...p, chatAvatar})); }
-        if (aboutPageAvatar) { form.setValue("aboutPageAvatar", aboutPageAvatar); setImagePreviews(p => ({...p, aboutPageAvatar})); }
-        if (chatBgImage) { form.setValue("chatBgImage", chatBgImage); setImagePreviews(p => ({...p, chatBgImage})); }
-    }
   });
+  
+  useEffect(() => {
+    const mainLogo = localStorage.getItem("mainLogo");
+    const chatAvatar = localStorage.getItem("chatAvatar");
+    const aboutPageAvatar = localStorage.getItem("aboutPageAvatar");
+    const chatBgImage = localStorage.getItem("chatBgImage");
+    
+    if (mainLogo) { imageForm.setValue("mainLogo", mainLogo); setImagePreviews(p => ({...p, mainLogo})); }
+    if (chatAvatar) { imageForm.setValue("chatAvatar", chatAvatar); setImagePreviews(p => ({...p, chatAvatar})); }
+    if (aboutPageAvatar) { imageForm.setValue("aboutPageAvatar", aboutPageAvatar); setImagePreviews(p => ({...p, aboutPageAvatar})); }
+    if (chatBgImage) { imageForm.setValue("chatBgImage", chatBgImage); setImagePreviews(p => ({...p, chatBgImage})); }
+  }, [imageForm]);
+
 
   const handlePersonalizationSubmit = (data: PersonalizationFormValues) => {
     localStorage.setItem("welcomeTitle", data.title);
