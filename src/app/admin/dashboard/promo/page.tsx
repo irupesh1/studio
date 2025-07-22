@@ -25,6 +25,8 @@ const promoFormSchema = z.object({
   endDate: z.date().optional(),
   text: z.string().optional(),
   media: z.string().optional(),
+  closeButtonDelay: z.coerce.number().min(0).default(15),
+  allowOutsideClick: z.boolean().default(false),
 });
 type PromoFormValues = z.infer<typeof promoFormSchema>;
 
@@ -43,12 +45,14 @@ export default function PromoPage() {
             ...parsed,
             startDate: parsed.startDate ? new Date(parsed.startDate) : undefined,
             endDate: parsed.endDate ? new Date(parsed.endDate) : undefined,
+            closeButtonDelay: parsed.closeButtonDelay !== undefined ? parsed.closeButtonDelay : 15,
+            allowOutsideClick: parsed.allowOutsideClick !== undefined ? parsed.allowOutsideClick : false,
         };
       }
     } catch (e) {
       console.error("Failed to parse promo data from localStorage", e);
     }
-    return { enabled: false };
+    return { enabled: false, closeButtonDelay: 15, allowOutsideClick: false };
   };
 
   const form = useForm<PromoFormValues>({
@@ -192,6 +196,36 @@ export default function PromoPage() {
                                 )}
                             </div>
                             <FormDescription>Upload an image or GIF for the promotion.</FormDescription>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="closeButtonDelay"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Close Button Delay (seconds)</FormLabel>
+                            <FormControl>
+                                <Input type="number" {...field} />
+                            </FormControl>
+                             <FormDescription>How long to wait before the close button appears.</FormDescription>
+                        </FormItem>
+                    )}
+                />
+
+                 <FormField
+                    control={form.control}
+                    name="allowOutsideClick"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                            <div className="space-y-0.5">
+                                <FormLabel>Allow Outside Click to Close</FormLabel>
+                                <FormDescription>Let users close the modal by clicking the background.</FormDescription>
+                            </div>
+                            <FormControl>
+                                <Switch checked={field.value} onCheckedChange={field.onChange}/>
+                            </FormControl>
                         </FormItem>
                     )}
                 />

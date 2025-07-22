@@ -12,6 +12,8 @@ interface PromoData {
   endDate?: string;
   text?: string;
   media?: string;
+  closeButtonDelay?: number;
+  allowOutsideClick?: boolean;
 }
 
 export function PromoModal() {
@@ -49,27 +51,44 @@ export function PromoModal() {
   }, []);
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && promoData) {
+      const delay = (promoData.closeButtonDelay ?? 15) * 1000;
       const timer = setTimeout(() => {
         setShowCloseButton(true);
-      }, 15000); // 15 seconds
+      }, delay);
 
       return () => clearTimeout(timer);
     }
-  }, [isVisible]);
+  }, [isVisible, promoData]);
+
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+  
+  const handleOverlayClick = () => {
+    if (promoData?.allowOutsideClick) {
+      handleClose();
+    }
+  };
 
   if (!isVisible || !promoData) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-in fade-in-50">
-      <div className="relative bg-card rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 text-center">
+    <div 
+        className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-in fade-in-50"
+        onClick={handleOverlayClick}
+    >
+      <div 
+        className="relative bg-card rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 text-center"
+        onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to the overlay
+      >
         {showCloseButton && (
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsVisible(false)}
+            onClick={handleClose}
             className="absolute top-2 right-2 rounded-full h-8 w-8"
             aria-label="Close promotion"
           >
