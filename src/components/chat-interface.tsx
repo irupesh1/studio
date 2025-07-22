@@ -65,6 +65,12 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const { toast } = useToast();
 
   useEffect(() => {
+    // This effect runs when themeSettings from the context changes.
+    const savedBgImage = localStorage.getItem("chatBgImage");
+    if (savedBgImage) setChatBgImage(savedBgImage);
+  }, [themeSettings]);
+
+  useEffect(() => {
     // On component mount, get custom settings from localStorage if they exist
     const savedTitle = localStorage.getItem("welcomeTitle");
     const savedDescription = localStorage.getItem("welcomeDescription");
@@ -246,7 +252,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   };
   
   const chatAreaStyle: React.CSSProperties = {
-      backgroundColor: 'var(--custom-message-area-bg)',
+      backgroundColor: themeSettings.messageAreaBg ? themeSettings.messageAreaBg : 'var(--custom-message-area-bg)',
       backgroundImage: chatBgImage ? `url(${chatBgImage})` : 'none',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
