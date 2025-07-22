@@ -3,8 +3,8 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-import { CustomThemeProvider } from "@/context/custom-theme-provider";
 import { ShutdownProvider } from '@/context/shutdown-provider';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'NexaAI Chat',
@@ -30,12 +30,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <CustomThemeProvider>
+          <React.Suspense fallback={<div>Loading...</div>}>
             <ShutdownProvider>
               {children}
             </ShutdownProvider>
-            <Toaster />
-          </CustomThemeProvider>
+          </React.Suspense>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
