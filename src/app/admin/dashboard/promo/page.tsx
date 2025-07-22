@@ -9,14 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Megaphone, CalendarIcon, Trash2, Eye, X } from "lucide-react";
+import { Megaphone, CalendarIcon, Trash2, Eye, X, Pencil } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import Image from "next/image";
 
 const promoFormSchema = z.object({
@@ -35,6 +35,7 @@ type PromoFormValues = z.infer<typeof promoFormSchema>;
 
 export default function PromoPage() {
   const { toast } = useToast();
+  const formRef = useRef<HTMLDivElement>(null);
   
   const getInitialPromoData = (): PromoFormValues => {
     try {
@@ -84,10 +85,14 @@ export default function PromoPage() {
       localStorage.setItem("promoData", JSON.stringify(data));
       toast({ title: "Success", description: "Promotional message settings have been updated." });
   };
+  
+  const handleEditClick = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="lg:col-span-1">
+        <Card className="lg:col-span-1" ref={formRef}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Megaphone/> Promotional Message</CardTitle>
             <CardDescription>Configure a timed, custom message to display on the landing page.</CardDescription>
@@ -117,9 +122,13 @@ export default function PromoPage() {
         </Card>
         
         <Card className="lg:col-span-1">
-            <CardHeader>
+            <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-2"><Eye/> Live Preview</CardTitle>
                 <CardDescription>This is how the modal will appear to users.</CardDescription>
+                 <Button variant="outline" size="icon" className="absolute top-4 right-4" onClick={handleEditClick}>
+                    <Pencil className="h-4 w-4" />
+                    <span className="sr-only">Edit Settings</span>
+                 </Button>
             </CardHeader>
             <CardContent>
                 <div className="bg-muted/30 p-4 rounded-lg flex items-center justify-center min-h-[400px]">
