@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -53,20 +52,7 @@ const defaultContent = {
 
 export default function FeedbackPage() {
   const { toast } = useToast();
-  const [content, setContent] = useState(defaultContent);
-
-  useEffect(() => {
-    const storedContent = localStorage.getItem("feedbackPageContent");
-    if (storedContent) {
-      try {
-        const parsedContent = JSON.parse(storedContent);
-        setContent(parsedContent);
-      } catch (e) {
-        console.error("Failed to parse feedback page content from localStorage", e);
-        setContent(defaultContent);
-      }
-    }
-  }, []);
+  const [content] = useLocalStorage("feedbackPageContent", defaultContent);
 
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackFormSchema),
@@ -201,4 +187,4 @@ NexaAI Feedback System
   );
 }
 
-  
+    

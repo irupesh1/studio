@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ShutdownProvider } from '@/context/shutdown-provider';
 import React from 'react';
+import { CustomThemeProvider } from '@/context/custom-theme-provider';
 
 export const metadata: Metadata = {
   title: 'NexaAI Chat',
@@ -30,14 +31,18 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ShutdownProvider>
-              {children}
-            </ShutdownProvider>
-          </React.Suspense>
-          <Toaster />
+          <CustomThemeProvider>
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <ShutdownProvider>
+                {children}
+              </ShutdownProvider>
+            </React.Suspense>
+            <Toaster />
+          </CustomThemeProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
+    

@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Lock } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 const loginFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -24,6 +25,10 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  
+  const [storedUsername] = useLocalStorage("adminUsername", "NexaAIadmin");
+  const [storedPassword] = useLocalStorage("adminPassword", "NexaAIv1.0");
+  const [, setIsAdminAuthenticated] = useLocalStorage("isAdminAuthenticated", "false");
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -36,13 +41,8 @@ export default function AdminLoginPage() {
   const onSubmit = (data: LoginFormValues) => {
     setIsLoading(true);
 
-    // In a real app, this would be a server-side check.
-    // For this prototype, we'll check against stored or default credentials.
-    const storedUsername = localStorage.getItem("adminUsername") || "NexaAIadmin";
-    const storedPassword = localStorage.getItem("adminPassword") || "NexaAIv1.0";
-
     if (data.username === storedUsername && data.password === storedPassword) {
-      localStorage.setItem("isAdminAuthenticated", "true");
+      setIsAdminAuthenticated("true");
       toast({
         title: "Login Successful",
         description: "Redirecting to admin dashboard...",
@@ -109,3 +109,5 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+    

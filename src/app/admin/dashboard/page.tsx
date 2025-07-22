@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useEffect } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 const credentialsFormSchema = z.object({
   username: z.string().min(4, { message: "Username must be at least 4 characters." }),
@@ -34,25 +34,18 @@ type CredentialsFormValues = z.infer<typeof credentialsFormSchema>;
 export default function AdminDashboardPage() {
   const { toast } = useToast();
 
+  const [username, setUsername] = useLocalStorage("adminUsername", "NexaAIadmin");
+  const [password, setPassword] = useLocalStorage("adminPassword", "NexaAIv1.0");
+
   const credentialsForm = useForm<CredentialsFormValues>({
     resolver: zodResolver(credentialsFormSchema),
-    defaultValues: {
-      username: "NexaAIadmin",
-      password: "NexaAIv1.0",
-    }
+    values: { username, password }
   });
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("adminUsername");
-    const storedPassword = localStorage.getItem("adminPassword");
-    if(storedUsername) credentialsForm.setValue("username", storedUsername);
-    if(storedPassword) credentialsForm.setValue("password", storedPassword);
-  }, [credentialsForm]);
 
 
   const handleCredentialsSubmit = (data: CredentialsFormValues) => {
-    localStorage.setItem("adminUsername", data.username);
-    localStorage.setItem("adminPassword", data.password);
+    setUsername(data.username);
+    setPassword(data.password);
     toast({ title: "Success", description: "Admin credentials updated." });
   };
   
@@ -143,3 +136,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    

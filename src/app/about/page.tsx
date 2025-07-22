@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
 const defaultContent = {
   title: "About NexaAI",
@@ -28,27 +29,8 @@ const defaultContent = {
 
 
 export default function AboutPage() {
-  const [content, setContent] = useState(defaultContent);
-  const [aboutPageAvatar, setAboutPageAvatar] = useState("https://placehold.co/40x40.png");
-
-  useEffect(() => {
-    const storedContent = localStorage.getItem("aboutPageContent");
-    if (storedContent) {
-      try {
-        const parsedContent = JSON.parse(storedContent);
-        setContent(parsedContent);
-      } catch (e) {
-        console.error("Failed to parse about page content from localStorage", e);
-        setContent(defaultContent);
-      }
-    }
-
-    const storedAvatar = localStorage.getItem("aboutPageAvatar");
-    if (storedAvatar) {
-        setAboutPageAvatar(storedAvatar);
-    }
-
-  }, []);
+  const [content] = useLocalStorage("aboutPageContent", defaultContent);
+  const [aboutPageAvatar] = useLocalStorage("aboutPageAvatar", "https://placehold.co/40x40.png");
 
   const highlights = [
     {
@@ -132,7 +114,7 @@ export default function AboutPage() {
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <Avatar>
-                      <AvatarImage src={aboutPageAvatar} alt="Developer" data-ai-hint="developer portrait" />
+                      <AvatarImage src={aboutPageAvatar || 'https://placehold.co/40x40.png'} alt="Developer" data-ai-hint="developer portrait" />
                       <AvatarFallback>D</AvatarFallback>
                     </Avatar>
                     <div>
@@ -155,3 +137,5 @@ export default function AboutPage() {
     </div>
   );
 }
+
+    

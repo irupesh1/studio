@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 const personalizationFormSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -38,65 +39,61 @@ type ImageFormValues = z.infer<typeof imageFormSchema>;
 
 export default function CustomizationPage() {
   const { toast } = useToast();
+
+  const [welcomeTitle, setWelcomeTitle] = useLocalStorage("welcomeTitle", "Nexa AI");
+  const [welcomeDescription, setWelcomeDescription] = useLocalStorage("welcomeDescription", "Your intelligent assistant for everything.");
+  const [welcomeFontFamily, setWelcomeFontFamily] = useLocalStorage("welcomeFontFamily", "Inter");
+
+  const [mainLogo, setMainLogo] = useLocalStorage<string | null>("mainLogo", null);
+  const [chatAvatar, setChatAvatar] = useLocalStorage<string | null>("chatAvatar", null);
+  const [aboutPageAvatar, setAboutPageAvatar] = useLocalStorage<string | null>("aboutPageAvatar", null);
+  const [chatBgImage, setChatBgImage] = useLocalStorage<string | null>("chatBgImage", null);
+
   const [imagePreviews, setImagePreviews] = useState({
-    mainLogo: "",
-    chatAvatar: "",
-    aboutPageAvatar: "",
-    chatBgImage: "",
+    mainLogo: mainLogo || "",
+    chatAvatar: chatAvatar || "",
+    aboutPageAvatar: aboutPageAvatar || "",
+    chatBgImage: chatBgImage || "",
   });
 
   const personalizationForm = useForm<PersonalizationFormValues>({
     resolver: zodResolver(personalizationFormSchema),
-    defaultValues: {
-      title: "Nexa AI",
-      description: "Your intelligent assistant for everything.",
-    },
+    values: { title: welcomeTitle, description: welcomeDescription },
   });
-
-  useEffect(() => {
-    const storedTitle = localStorage.getItem("welcomeTitle");
-    const storedDescription = localStorage.getItem("welcomeDescription");
-    if(storedTitle) personalizationForm.setValue("title", storedTitle);
-    if(storedDescription) personalizationForm.setValue("description", storedDescription);
-  }, [personalizationForm]);
 
   const appearanceForm = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
-    defaultValues: {
-      fontFamily: "Inter",
-    },
+    values: { fontFamily: welcomeFontFamily },
   });
-
-  useEffect(() => {
-    const storedFont = localStorage.getItem("welcomeFontFamily");
-    if(storedFont) appearanceForm.setValue("fontFamily", storedFont);
-  }, [appearanceForm]);
   
   const imageForm = useForm<ImageFormValues>({
     resolver: zodResolver(imageFormSchema),
+    values: {
+        mainLogo: mainLogo || undefined,
+        chatAvatar: chatAvatar || undefined,
+        aboutPageAvatar: aboutPageAvatar || undefined,
+        chatBgImage: chatBgImage || undefined,
+    }
   });
-  
-  useEffect(() => {
-    const mainLogo = localStorage.getItem("mainLogo");
-    const chatAvatar = localStorage.getItem("chatAvatar");
-    const aboutPageAvatar = localStorage.getItem("aboutPageAvatar");
-    const chatBgImage = localStorage.getItem("chatBgImage");
-    
-    if (mainLogo) { imageForm.setValue("mainLogo", mainLogo); setImagePreviews(p => ({...p, mainLogo})); }
-    if (chatAvatar) { imageForm.setValue("chatAvatar", chatAvatar); setImagePreviews(p => ({...p, chatAvatar})); }
-    if (aboutPageAvatar) { imageForm.setValue("aboutPageAvatar", aboutPageAvatar); setImagePreviews(p => ({...p, aboutPageAvatar})); }
-    if (chatBgImage) { imageForm.setValue("chatBgImage", chatBgImage); setImagePreviews(p => ({...p, chatBgImage})); }
-  }, [imageForm]);
 
+  useEffect(() => {
+    setImagePreviews({
+        mainLogo: mainLogo || "",
+        chatAvatar: chatAvatar || "",
+        aboutPageAvatar: aboutPageAvatar || "",
+        chatBgImage: chatBgImage || "",
+    });
+  }, [mainLogo, chatAvatar, aboutPageAvatar, chatBgImage])
+  
 
   const handlePersonalizationSubmit = (data: PersonalizationFormValues) => {
-    localStorage.setItem("welcomeTitle", data.title);
-    localStorage.setItem("welcomeDescription", data.description);
+    setWelcomeTitle(data.title);
+    setWelcomeDescription(data.description);
     toast({ title: "Success", description: "Welcome screen updated." });
   };
 
   const handleAppearanceSubmit = (data: AppearanceFormValues) => {
-    localStorage.setItem("welcomeFontFamily", data.fontFamily);
+    setWelcomeFontFamily(data.fontFamily);
     toast({ title: "Success", description: "Appearance settings updated." });
   };
   
@@ -114,13 +111,11 @@ export default function CustomizationPage() {
   };
 
   const handleImageSubmit = (data: ImageFormValues) => {
-    Object.entries(data).forEach(([key, value]) => {
-        if(value) {
-            localStorage.setItem(key, value);
-        } else {
-            localStorage.removeItem(key);
-        }
-    });
+    if(data.mainLogo) setMainLogo(data.mainLogo); else setMainLogo(null);
+    if(data.chatAvatar) setChatAvatar(data.chatAvatar); else setChatAvatar(null);
+    if(data.aboutPageAvatar) setAboutPageAvatar(data.aboutPageAvatar); else setAboutPageAvatar(null);
+    if(data.chatBgImage) setChatBgImage(data.chatBgImage); else setChatBgImage(null);
+    
     toast({ title: "Success", description: "Images have been updated." });
     window.dispatchEvent(new Event('theme-updated'));
   };
@@ -128,8 +123,13 @@ export default function CustomizationPage() {
   const resetImage = (fieldName: keyof ImageFormValues) => {
       imageForm.setValue(fieldName, "");
       setImagePreviews(prev => ({...prev, [fieldName]: ""}));
-      localStorage.removeItem(fieldName);
-      toast({ title: "Image Reset", description: `The ${fieldName} has been reset.` });
+
+      if(fieldName === "mainLogo") setMainLogo(null);
+      if(fieldName === "chatAvatar") setChatAvatar(null);
+      if(fieldName === "aboutPageAvatar") setAboutPageAvatar(null);
+      if(fieldName === "chatBgImage") setChatBgImage(null);
+
+      toast({ title: "Image Reset", description: `The ${fieldName.replace(/([A-Z])/g, ' $1').toLowerCase()} has been reset.` });
       window.dispatchEvent(new Event('theme-updated'));
   };
 
@@ -202,3 +202,5 @@ export default function CustomizationPage() {
         </Card>
   );
 }
+
+    

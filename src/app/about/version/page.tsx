@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 import { ArrowLeft, BrainCircuit, Lightbulb, CheckCircle, Construction } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -21,20 +21,7 @@ const defaultContent = {
 };
 
 export default function VersionPage() {
-  const [content, setContent] = useState(defaultContent);
-
-  useEffect(() => {
-    const storedContent = localStorage.getItem("versionPageContent");
-    if (storedContent) {
-      try {
-        const parsedContent = JSON.parse(storedContent);
-        setContent(parsedContent);
-      } catch (e) {
-        console.error("Failed to parse version page content from localStorage", e);
-        setContent(defaultContent);
-      }
-    }
-  }, []);
+  const [content] = useLocalStorage("versionPageContent", defaultContent);
 
   return (
     <div className="min-h-screen bg-muted/20 py-8 px-4">
@@ -128,4 +115,4 @@ export default function VersionPage() {
   );
 }
 
-  
+    

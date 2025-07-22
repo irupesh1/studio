@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { useEffect } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 const aboutPageSchema = z.object({
   title: z.string(),
@@ -74,122 +74,104 @@ type SurveyPageValues = z.infer<typeof surveyPageSchema>;
 export default function ContentPage() {
   const { toast } = useToast();
 
-  const aboutPageForm = useForm<AboutPageValues>({
-    resolver: zodResolver(aboutPageSchema),
-    defaultValues: {
-        title: "About NexaAI",
-        description: "Your smart, intuitive, and evolving AI companion.",
-        uniqueSectionTitle: "What Makes Nexa AI Unique?",
-        uniqueSectionText: "Nexa AI is not just another chatbot—it’s a smart, intuitive, and evolving AI companion designed to understand, learn, and grow with each interaction. What sets Nexa AI apart is its user-centric intelligence, deeply rooted in real-time responsiveness, privacy-first architecture, and adaptive learning.",
-        highlight1Title: "Locally Trained for Privacy",
-        highlight1Text: "Nexa AI respects user privacy by storing past interactions only on your local device. No data is sent to servers—your information vanishes as soon as you refresh the page.",
-        highlight2Title: "Designed by a Developer, Not a Corporation",
-        highlight2Text: "Unlike mass-produced AI platforms, Nexa AI is thoughtfully crafted by a 3rd-year B.Tech student, Rupesh, with a deep focus on usability, innovation, and ethical AI design.",
-        highlight3Title: "Minimalist and Modern Interface",
-        highlight3Text: "The UI is fast, responsive, and visually elegant—built to simplify conversations while delivering powerful AI performance behind the scenes.",
-        highlight4Title: "Evolving with Every Interaction",
-        highlight4Text: "Nexa AI observes and adapts within sessions, offering smarter replies and better context without requiring complex setup or user data collection.",
-        quote: "“NexaAI was built to prove that one passionate developer can create something powerful, ethical, and user-friendly without a billion-dollar company behind them.”",
-    },
+  const [aboutContent, setAboutContent] = useLocalStorage("aboutPageContent", {
+      title: "About NexaAI",
+      description: "Your smart, intuitive, and evolving AI companion.",
+      uniqueSectionTitle: "What Makes Nexa AI Unique?",
+      uniqueSectionText: "Nexa AI is not just another chatbot—it’s a smart, intuitive, and evolving AI companion designed to understand, learn, and grow with each interaction. What sets Nexa AI apart is its user-centric intelligence, deeply rooted in real-time responsiveness, privacy-first architecture, and adaptive learning.",
+      highlight1Title: "Locally Trained for Privacy",
+      highlight1Text: "Nexa AI respects user privacy by storing past interactions only on your local device. No data is sent to servers—your information vanishes as soon as you refresh the page.",
+      highlight2Title: "Designed by a Developer, Not a Corporation",
+      highlight2Text: "Unlike mass-produced AI platforms, Nexa AI is thoughtfully crafted by a 3rd-year B.Tech student, Rupesh, with a deep focus on usability, innovation, and ethical AI design.",
+      highlight3Title: "Minimalist and Modern Interface",
+      highlight3Text: "The UI is fast, responsive, and visually elegant—built to simplify conversations while delivering powerful AI performance behind the scenes.",
+      highlight4Title: "Evolving with Every Interaction",
+      highlight4Text: "Nexa AI observes and adapts within sessions, offering smarter replies and better context without requiring complex setup or user data collection.",
+      quote: "“NexaAI was built to prove that one passionate developer can create something powerful, ethical, and user-friendly without a billion-dollar company behind them.”",
   });
 
-  useEffect(() => {
-    const storedContent = localStorage.getItem("aboutPageContent");
-    if(storedContent) {
-      aboutPageForm.reset(JSON.parse(storedContent));
-    }
-  }, [aboutPageForm]);
+  const aboutPageForm = useForm<AboutPageValues>({
+    resolver: zodResolver(aboutPageSchema),
+    values: aboutContent,
+  });
 
+  const [versionContent, setVersionContent] = useLocalStorage("versionPageContent", {
+      title: "Version Details",
+      description: "Information about NexaAI Learner v1.0",
+      version: "NexaAI Learner v1.0",
+      status: "Active | Learning Mode Enabled",
+      quote: "“This is the foundation version of NexaAI — built to learn, improve, and evolve through every user interaction. Fast, lightweight, and focused on understanding you better with each session.”",
+      philosophyText: "The beginning of NexaAI’s intelligence journey\nFocus on local session learning and privacy\nA foundation for future updates like memory, voice input, and intent detection\nA commitment to growing through user feedback and real-world use",
+      coreFeatures: "Clean, responsive chat interface\nLocal storage for private chat history\nFast and real-time user interaction\nMultilingual support (EN, HI, UR)\nBasic adaptive learning in session",
+      upcomingFeatures: "Session memory\nVoice input\nEmotional tone detection"
+  });
 
-    const versionPageForm = useForm<VersionPageValues>({
-        resolver: zodResolver(versionPageSchema),
-        defaultValues: {
-            title: "Version Details",
-            description: "Information about NexaAI Learner v1.0",
-            version: "NexaAI Learner v1.0",
-            status: "Active | Learning Mode Enabled",
-            quote: "“This is the foundation version of NexaAI — built to learn, improve, and evolve through every user interaction. Fast, lightweight, and focused on understanding you better with each session.”",
-            philosophyText: "The beginning of NexaAI’s intelligence journey\nFocus on local session learning and privacy\nA foundation for future updates like memory, voice input, and intent detection\nA commitment to growing through user feedback and real-world use",
-            coreFeatures: "Clean, responsive chat interface\nLocal storage for private chat history\nFast and real-time user interaction\nMultilingual support (EN, HI, UR)\nBasic adaptive learning in session",
-            upcomingFeatures: "Session memory\nVoice input\nEmotional tone detection"
-        },
-    });
+  const versionPageForm = useForm<VersionPageValues>({
+      resolver: zodResolver(versionPageSchema),
+      values: versionContent,
+  });
 
-    useEffect(() => {
-        const stored = localStorage.getItem("versionPageContent");
-        if(stored) versionPageForm.reset(JSON.parse(stored));
-    }, [versionPageForm]);
+  const [privacyContent, setPrivacyContent] = useLocalStorage("privacyPageContent", {
+      title: "Privacy Policy",
+      effectiveDate: "October 17, 2023",
+      intro: "Welcome to NexaAI. Your privacy is important to us. This Privacy Policy outlines how we collect, use, store, and protect your data when you interact with our services through the website.",
+      infoCollection: "We are committed to minimal data collection to protect your privacy. Here's what we collect:\n- **User Conversations:** We temporarily store your past chat interactions only on your local device storage (localStorage).\n- **Technical Information:** To enhance your experience, we may collect non-personal data such as browser type, device type, operating system, and usage analytics through anonymized tools.",
+      dataUsage: "Your data is used for the following purposes:\n- **Training NexaAI Locally:** Your previous messages are stored temporarily to enhance conversation continuity and context understanding. This helps NexaAI perform better during your current session.\n- **Improved User Experience:** We use temporary local data to personalize responses and remember preferences during the same session.",
+      localStorage: "Your data is not sent to any server or shared with third parties. Data is stored only in your browser’s local storage and is used exclusively by NexaAI on your device. Once you refresh, close, or leave the page, all stored conversations are automatically deleted.",
+      contactEmail: "ibefikra1@gmail.com"
+  });
 
-    const privacyPageForm = useForm<PrivacyPageValues>({
-        resolver: zodResolver(privacyPageSchema),
-        defaultValues: {
-            title: "Privacy Policy",
-            effectiveDate: "October 17, 2023",
-            intro: "Welcome to NexaAI. Your privacy is important to us. This Privacy Policy outlines how we collect, use, store, and protect your data when you interact with our services through the website.",
-            infoCollection: "We are committed to minimal data collection to protect your privacy. Here's what we collect:\n- **User Conversations:** We temporarily store your past chat interactions only on your local device storage (localStorage).\n- **Technical Information:** To enhance your experience, we may collect non-personal data such as browser type, device type, operating system, and usage analytics through anonymized tools.",
-            dataUsage: "Your data is used for the following purposes:\n- **Training NexaAI Locally:** Your previous messages are stored temporarily to enhance conversation continuity and context understanding. This helps NexaAI perform better during your current session.\n- **Improved User Experience:** We use temporary local data to personalize responses and remember preferences during the same session.",
-            localStorage: "Your data is not sent to any server or shared with third parties. Data is stored only in your browser’s local storage and is used exclusively by NexaAI on your device. Once you refresh, close, or leave the page, all stored conversations are automatically deleted.",
-            contactEmail: "ibefikra1@gmail.com"
-        },
-    });
+  const privacyPageForm = useForm<PrivacyPageValues>({
+      resolver: zodResolver(privacyPageSchema),
+      values: privacyContent,
+  });
 
-    useEffect(() => {
-        const stored = localStorage.getItem("privacyPageContent");
-        if(stored) privacyPageForm.reset(JSON.parse(stored));
-    }, [privacyPageForm]);
+  const [feedbackContent, setFeedbackContent] = useLocalStorage("feedbackPageContent", {
+      title: "Submit Feedback",
+      description: "We'd love to hear your thoughts on NexaAI.",
+      nameLabel: "Name",
+      feedbackLabel: "Feedback",
+      featuresLabel: "Suggest Features (Optional)",
+      surveyLinkText: "Quick Survey",
+  });
 
   const feedbackPageForm = useForm<FeedbackPageValues>({
     resolver: zodResolver(feedbackPageSchema),
-    defaultValues: {
-        title: "Submit Feedback",
-        description: "We'd love to hear your thoughts on NexaAI.",
-        nameLabel: "Name",
-        feedbackLabel: "Feedback",
-        featuresLabel: "Suggest Features (Optional)",
-        surveyLinkText: "Quick Survey",
-    },
+    values: feedbackContent,
   });
 
-  useEffect(() => {
-    const stored = localStorage.getItem("feedbackPageContent");
-    if (stored) feedbackPageForm.reset(JSON.parse(stored));
-  }, [feedbackPageForm]);
+  const [surveyContent, setSurveyContent] = useLocalStorage("surveyPageContent", {
+      title: "Quick Survey",
+      description: "Your feedback helps us improve NexaAI for everyone.",
+  });
 
   const surveyPageForm = useForm<SurveyPageValues>({
       resolver: zodResolver(surveyPageSchema),
-      defaultValues: {
-          title: "Quick Survey",
-          description: "Your feedback helps us improve NexaAI for everyone.",
-      },
+      values: surveyContent,
   });
   
-  useEffect(() => {
-      const stored = localStorage.getItem("surveyPageContent");
-      if(stored) surveyPageForm.reset(JSON.parse(stored));
-  }, [surveyPageForm]);
-
     const handleAboutPageSubmit = (data: AboutPageValues) => {
-        localStorage.setItem("aboutPageContent", JSON.stringify(data));
+        setAboutContent(data);
         toast({ title: "Success", description: "About Page content updated." });
     };
 
     const handleVersionPageSubmit = (data: VersionPageValues) => {
-        localStorage.setItem("versionPageContent", JSON.stringify(data));
+        setVersionContent(data);
         toast({ title: "Success", description: "Version Page content updated." });
     };
 
     const handlePrivacyPageSubmit = (data: PrivacyPageValues) => {
-        localStorage.setItem("privacyPageContent", JSON.stringify(data));
+        setPrivacyContent(data);
         toast({ title: "Success", description: "Privacy Policy content updated." });
     };
 
     const handleFeedbackPageSubmit = (data: FeedbackPageValues) => {
-        localStorage.setItem("feedbackPageContent", JSON.stringify(data));
+        setFeedbackContent(data);
         toast({ title: "Success", description: "Feedback Page content updated." });
     };
 
     const handleSurveyPageSubmit = (data: SurveyPageValues) => {
-        localStorage.setItem("surveyPageContent", JSON.stringify(data));
+        setSurveyContent(data);
         toast({ title: "Success", description: "Survey Page content updated." });
     };
 
@@ -293,3 +275,5 @@ export default function ContentPage() {
     </Card>
   );
 }
+
+    

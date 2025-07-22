@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link as LinkIcon } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
-import { useEffect } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 const shortcutButtonSchema = z.object({
   enabled: z.boolean(),
@@ -30,40 +30,24 @@ type ShortcutsFormValues = z.infer<typeof shortcutsFormSchema>;
 
 export default function ShortcutsPage() {
   const { toast } = useToast();
+
+  const [shortcuts, setShortcuts] = useLocalStorage<ShortcutsFormValues["shortcuts"]>("shortcutButtons", Array(4).fill({
+    enabled: false,
+    text: "Learn More",
+    link: "#",
+    bgColor: "#3B82F6",
+    textColor: "#FFFFFF",
+    hoverBgColor: "#2563EB",
+    hoverTextColor: "#FFFFFF",
+  }));
   
-  const getInitialShortcuts = (): ShortcutsFormValues => {
-    try {
-      const storedShortcuts = localStorage.getItem("shortcutButtons");
-      if (storedShortcuts) {
-        const parsed = JSON.parse(storedShortcuts);
-        if(Array.isArray(parsed) && parsed.length === 4) {
-            return { shortcuts: parsed };
-        }
-      }
-    } catch (e) {
-        console.error("Failed to parse shortcuts from localStorage", e);
-    }
-
-    return {
-      shortcuts: Array(4).fill({
-        enabled: false,
-        text: "Learn More",
-        link: "#",
-        bgColor: "#3B82F6",
-        textColor: "#FFFFFF",
-        hoverBgColor: "#2563EB",
-        hoverTextColor: "#FFFFFF",
-      }),
-    };
-  };
-
   const shortcutsForm = useForm<ShortcutsFormValues>({
     resolver: zodResolver(shortcutsFormSchema),
-    defaultValues: getInitialShortcuts(),
+    defaultValues: { shortcuts },
   });
   
   const handleShortcutsSubmit = (data: ShortcutsFormValues) => {
-    localStorage.setItem("shortcutButtons", JSON.stringify(data.shortcuts));
+    setShortcuts(data.shortcuts);
     toast({ title: "Success", description: "Shortcut buttons updated." });
   };
   
@@ -101,3 +85,5 @@ export default function ShortcutsPage() {
     </Card>
   );
 }
+
+    

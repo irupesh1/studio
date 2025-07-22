@@ -20,9 +20,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from "@/components/ui/separator";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 const surveyFormSchema = z.object({
     easeOfUse: z.string().optional(),
@@ -52,25 +53,12 @@ const defaultContent = {
 
 export default function SurveyPage() {
   const { toast } = useToast();
-  const [content, setContent] = useState(defaultContent);
+  const [content] = useLocalStorage("surveyPageContent", defaultContent);
   const form = useForm<SurveyFormValues>({
     resolver: zodResolver(surveyFormSchema),
   });
 
   const [rating, setRating] = useState(0);
-
-  useEffect(() => {
-    const storedContent = localStorage.getItem("surveyPageContent");
-    if (storedContent) {
-      try {
-        const parsedContent = JSON.parse(storedContent);
-        setContent(parsedContent);
-      } catch (e) {
-        console.error("Failed to parse survey page content from localStorage", e);
-        setContent(defaultContent);
-      }
-    }
-  }, []);
 
   function onSubmit(data: SurveyFormValues) {
     const surveyData = { ...data, overallExperience: rating || 'Not Rated' };
@@ -263,4 +251,4 @@ export default function SurveyPage() {
   );
 }
 
-  
+    

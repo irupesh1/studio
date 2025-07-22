@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Palette, Trash2 } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 const themeCustomizationSchema = z.object({
     headerBg: z.string(),
@@ -27,52 +28,35 @@ type ThemeCustomizationValues = z.infer<typeof themeCustomizationSchema>;
 
 export default function ThemePage() {
   const { toast } = useToast();
+  
+  const defaultTheme = {
+    headerBg: "#ffffff",
+    headerText: "#0f172a",
+    messageAreaBg: "#ffffff",
+    inputBg: "#f1f5f9",
+    inputBorder: "#e2e8f0",
+    inputText: "#0f172a",
+    inputPlaceholder: "Ask NexaAI Anything...",
+    sendButtonBg: "#0f172a",
+    sendButtonIcon: "#f8fafc",
+  };
+
+  const [customTheme, setCustomTheme] = useLocalStorage("customTheme", defaultTheme);
 
   const themeForm = useForm<ThemeCustomizationValues>({
       resolver: zodResolver(themeCustomizationSchema),
-      defaultValues: {
-        headerBg: "#ffffff",
-        headerText: "#0f172a",
-        messageAreaBg: "#ffffff",
-        inputBg: "#f1f5f9",
-        inputBorder: "#e2e8f0",
-        inputText: "#0f172a",
-        inputPlaceholder: "Ask NexaAI Anything...",
-        sendButtonBg: "#0f172a",
-        sendButtonIcon: "#f8fafc",
-      },
-      effects: (form) => {
-        const storedTheme = localStorage.getItem("customTheme");
-        if (storedTheme) {
-            try {
-                const parsedTheme = JSON.parse(storedTheme);
-                form.reset(parsedTheme);
-            } catch (e) {
-                console.error("Failed to parse theme from localStorage", e);
-            }
-        }
-      }
+      values: customTheme,
   });
 
   const handleThemeSubmit = (data: ThemeCustomizationValues) => {
-      localStorage.setItem("customTheme", JSON.stringify(data));
+      setCustomTheme(data);
       toast({ title: "Success", description: "Theme updated. Refresh to see changes." });
       window.dispatchEvent(new Event('theme-updated'));
   }
   
   const handleResetTheme = () => {
-    localStorage.removeItem("customTheme");
-    themeForm.reset({
-        headerBg: "#ffffff",
-        headerText: "#0f172a",
-        messageAreaBg: "#ffffff",
-        inputBg: "#f1f5f9",
-        inputBorder: "#e2e8f0",
-        inputText: "#0f172a",
-        inputPlaceholder: "Ask NexaAI Anything...",
-        sendButtonBg: "#0f172a",
-        sendButtonIcon: "#f8fafc",
-    });
+    setCustomTheme(defaultTheme);
+    themeForm.reset(defaultTheme);
     toast({ title: "Theme Reset", description: "Custom theme has been reset to default." });
     window.dispatchEvent(new Event('theme-updated'));
   };
@@ -105,3 +89,5 @@ export default function ThemePage() {
     </Card>
   );
 }
+
+    

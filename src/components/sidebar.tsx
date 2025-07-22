@@ -8,6 +8,7 @@ import { Plus, Shield, MessageSquare, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface SidebarProps {
   startNewChat: () => void;
@@ -36,20 +37,8 @@ export function Sidebar({ startNewChat }: SidebarProps) {
   const router = useRouter();
   const { toast } = useToast();
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
-  const [mainLogo, setMainLogo] = useState<string | null>(null);
+  const [mainLogo] = useLocalStorage<string | null>("mainLogo", null);
 
-  useEffect(() => {
-    const handleThemeUpdate = () => {
-        const storedLogo = localStorage.getItem("mainLogo");
-        setMainLogo(storedLogo);
-    };
-
-    handleThemeUpdate();
-    window.addEventListener('theme-updated', handleThemeUpdate);
-    return () => {
-        window.removeEventListener('theme-updated', handleThemeUpdate);
-    };
-  }, []);
 
   const handleLogoClick = () => {
     // This handles the "double-click" part.
@@ -127,3 +116,5 @@ export function Sidebar({ startNewChat }: SidebarProps) {
     </aside>
   );
 }
+
+    

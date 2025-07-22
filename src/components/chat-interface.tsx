@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useThemeContext } from '@/context/custom-theme-provider';
 import NextImage from 'next/image';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
 
 interface ChatInterfaceProps {
@@ -46,13 +47,14 @@ const DefaultLogo = (props: React.SVGProps<SVGSVGElement>) => (
 export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [welcomeTitle, setWelcomeTitle] = useState("Nexa AI");
-  const [welcomeDescription, setWelcomeDescription] = useState("Your intelligent assistant for everything.");
-  const [welcomeFontFamily, setWelcomeFontFamily] = useState("Inter");
-  const [shortcutButtons, setShortcutButtons] = useState<ShortcutButton[]>([]);
+  const [welcomeTitle] = useLocalStorage("welcomeTitle", "Nexa AI");
+  const [welcomeDescription] = useLocalStorage("welcomeDescription", "Your intelligent assistant for everything.");
+  const [welcomeFontFamily] = useLocalStorage("welcomeFontFamily", "Inter");
+  const [shortcutButtons] = useLocalStorage<ShortcutButton[]>("shortcutButtons", []);
   const [hoveredButton, setHoveredButton] = useState<number | null>(null);
-  const [chatAvatar, setChatAvatar] = useState<string | null>(null);
-  const [chatBgImage, setChatBgImage] = useState<string | null>(null);
+  const [chatAvatar] = useLocalStorage<string | null>("chatAvatar", null);
+  const [chatBgImage] = useLocalStorage<string | null>("chatBgImage", null);
+
   const { themeSettings } = useThemeContext();
 
   const [audioState, setAudioState] = useState<{ [key: string]: 'playing' | 'paused' | 'stopped' }>({});
@@ -62,38 +64,6 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    // This effect runs when themeSettings from the context changes.
-    const savedBgImage = localStorage.getItem("chatBgImage");
-    if (savedBgImage) setChatBgImage(savedBgImage);
-  }, [themeSettings]);
-
-  useEffect(() => {
-    // On component mount, get custom settings from localStorage if they exist
-    const savedTitle = localStorage.getItem("welcomeTitle");
-    const savedDescription = localStorage.getItem("welcomeDescription");
-    const savedFont = localStorage.getItem("welcomeFontFamily");
-    const savedButtons = localStorage.getItem("shortcutButtons");
-    const savedAvatar = localStorage.getItem("chatAvatar");
-    const savedBgImage = localStorage.getItem("chatBgImage");
-
-    if (savedTitle) setWelcomeTitle(savedTitle);
-    if (savedDescription) setWelcomeDescription(savedDescription);
-    if (savedFont) setWelcomeFontFamily(savedFont);
-    if (savedAvatar) setChatAvatar(savedAvatar);
-    if (savedBgImage) setChatBgImage(savedBgImage);
-    if (savedButtons) {
-        try {
-            const parsedButtons = JSON.parse(savedButtons);
-            if(Array.isArray(parsedButtons)) {
-                setShortcutButtons(parsedButtons.filter(btn => btn.enabled));
-            }
-        } catch(e) {
-            console.error("Failed to parse shortcut buttons from localStorage", e);
-        }
-    }
-  }, []);
 
   const scrollToBottom = () => {
     if (viewportRef.current) {
@@ -121,23 +91,29 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     });
   };
 
-  const handlePlayAudio = async (message: Message) => {
-    // If another audio is playing, stop it
-    if (audioRef.current && !audioRef.current.paused) {
+  const stopCurrentAudio = () => {
+    if (audioRef.current) {
         audioRef.current.pause();
-        // Reset all other audio states
-        const newAudioState: { [key: string]: 'playing' | 'paused' | 'stopped' } = {};
-        Object.keys(audioState).forEach(id => newAudioState[id] = 'stopped');
-        setAudioState(newAudioState);
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+    }
+    setAudioState({});
+  }
+
+  const handlePlayAudio = async (message: Message) => {
+    if (audioRef.current && !audioRef.current.paused) {
+        // If audio is currently playing, check if it's for the same message
+        const currentlyPlayingId = Object.keys(audioState).find(id => audioState[id] === 'playing');
+        
+        // Stop current audio before playing a new one
+        stopCurrentAudio();
+
+        if (currentlyPlayingId === message.id) {
+            // If the user clicked the same message that was playing, just stop it.
+            return;
+        }
     }
     
-    // If the clicked message is currently playing, pause it
-    if (audioState[message.id] === 'playing' && audioRef.current) {
-        audioRef.current.pause();
-        setAudioState(prev => ({ ...prev, [message.id]: 'paused' }));
-        return;
-    }
-
     // If the clicked message is paused, resume it
     if (audioState[message.id] === 'paused' && audioRef.current) {
         audioRef.current.play();
@@ -145,19 +121,26 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         return;
     }
 
-    // If the message already has audio data, play it
-    if (message.audioDataUri) {
-        const audio = new Audio(message.audioDataUri);
+    const playAudio = (audioDataUri: string) => {
+        const audio = new Audio(audioDataUri);
         audioRef.current = audio;
+        setAudioState({ [message.id]: 'playing' });
         audio.play();
-        setAudioState(prev => ({ ...prev, [message.id]: 'playing' }));
         audio.onended = () => {
             setAudioState(prev => ({ ...prev, [message.id]: 'stopped' }));
+            audioRef.current = null;
         };
+        audio.onpause = () => {
+             if (audio.ended) return;
+             setAudioState(prev => ({ ...prev, [message.id]: 'paused' }));
+        }
+    }
+
+    if (message.audioDataUri) {
+        playAudio(message.audioDataUri);
         return;
     }
 
-    // Otherwise, generate the audio
     try {
       const audioDataUri = await getAudioForText(message.content);
       if (audioDataUri) {
@@ -166,13 +149,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
             m.id === message.id ? { ...m, audioDataUri } : m
           )
         );
-        const audio = new Audio(audioDataUri);
-        audioRef.current = audio;
-        audio.play();
-        setAudioState(prev => ({ ...prev, [message.id]: 'playing' }));
-        audio.onended = () => {
-            setAudioState(prev => ({ ...prev, [message.id]: 'stopped' }));
-        };
+        playAudio(audioDataUri);
       }
     } catch (error) {
       console.error(error);
@@ -193,12 +170,11 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
 
     const lastAiMessage = messages[lastAiMessageIndex];
     
-    // History up to the message before the last AI response
     const historyForRegeneration = messages.slice(0, lastAiMessageIndex);
     if (historyForRegeneration.length === 0 || historyForRegeneration[historyForRegeneration.length-1].role !== 'user') return;
 
     setIsLoading(true);
-    setMessages(historyForRegeneration); // Show UI state without the last AI message
+    setMessages(historyForRegeneration);
 
     try {
       const aiMessage = await regenerateResponse(historyForRegeneration, lastAiMessage.content);
@@ -210,7 +186,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
         title: 'Error',
         description: 'Failed to regenerate response.',
       });
-      setMessages(messages); // Restore original messages on failure
+      setMessages(messages); 
     } finally {
       setIsLoading(false);
     }
@@ -285,7 +261,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     {welcomeDescription}
                   </p>
                   <div className="mt-8 flex justify-center items-center gap-4 flex-wrap">
-                    {shortcutButtons.map((btn, index) => (
+                    {(shortcutButtons || []).filter(btn => btn.enabled).map((btn, index) => (
                         <Link href={btn.link} key={index} passHref>
                           <button
                             onMouseEnter={() => setHoveredButton(index)}
@@ -342,7 +318,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                           <button aria-label="Like response"><ThumbsUp className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           <button aria-label="Dislike response"><ThumbsDown className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           <button onClick={() => handlePlayAudio(message)} className="disabled:opacity-50" aria-label="Play audio">
-                             {audioState[message.id] === 'playing' ? <Pause className="w-4 h-4 text-primary" /> : <Volume2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />}
+                             {audioState[message.id] === 'playing' ? <Pause className="w-4 h-4 text-primary" /> : (audioState[message.id] === 'paused' ? <Play className="w-4 h-4 text-primary" /> : <Volume2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />) }
                           </button>
                            <button aria-label="Share response"><Share2 className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" /></button>
                           {index === messages.length - 1 && !isLoading && (
@@ -415,3 +391,5 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     </div>
   );
 }
+
+    
