@@ -6,7 +6,7 @@ import { ChatInterface } from "@/components/chat-interface";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import type { Message } from "@/types";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -57,6 +57,9 @@ export default function Home() {
         <div className="md:hidden">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetContent side="left" className="w-60 p-0">
+              <SheetHeader>
+                <SheetTitle className="sr-only">Main Menu</SheetTitle>
+              </SheetHeader>
               <Sidebar startNewChat={startNewChat} />
             </SheetContent>
           </Sheet>
