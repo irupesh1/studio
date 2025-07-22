@@ -1,3 +1,4 @@
+
 "use client";
 
 import { z } from "zod";
@@ -9,6 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "lucide-react";
+import { SiteStatusManager } from "@/components/site-status-manager";
+import { Separator } from "@/components/ui/separator";
 
 const credentialsFormSchema = z.object({
   username: z.string().min(4, { message: "Username must be at least 4 characters." }),
@@ -52,6 +55,11 @@ export default function AdminDashboardPage() {
                 </Form>
             </CardContent>
         </Card>
+
+        <Separator />
+
+        <SiteStatusManager />
+
     </div>
   );
 }
