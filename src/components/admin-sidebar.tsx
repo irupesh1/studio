@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { User, Settings, Palette, Link as LinkIcon, FileText } from "lucide-react";
+import { User, Settings, Palette, Link as LinkIcon, FileText, Megaphone } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -16,6 +16,7 @@ const navLinks = [
     { href: "/admin/dashboard/theme", label: "Theme", icon: Palette },
     { href: "/admin/dashboard/shortcuts", label: "Shortcuts", icon: LinkIcon },
     { href: "/admin/dashboard/content", label: "Content", icon: FileText },
+    { href: "/admin/dashboard/promo", label: "Promotions", icon: Megaphone },
 ];
 
 interface AdminSidebarProps {

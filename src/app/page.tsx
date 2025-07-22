@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { PromoModal } from "@/components/promo-modal";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -47,14 +48,15 @@ export default function Home() {
 
   return (
     <div className="flex h-screen bg-background">
-      <div className="hidden md:flex md:w-64 flex-shrink-0">
+      <PromoModal />
+      <div className="hidden md:flex md:w-60 flex-shrink-0">
         <Sidebar startNewChat={startNewChat} />
       </div>
       <main className="flex-1 flex flex-col">
         <Header onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
         <div className="md:hidden">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-            <SheetContent side="left" className="w-64 p-0">
+            <SheetContent side="left" className="w-60 p-0">
               <Sidebar startNewChat={startNewChat} />
             </SheetContent>
           </Sheet>
