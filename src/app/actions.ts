@@ -33,7 +33,7 @@ export async function sendMessage(history: Message[]): Promise<Message> {
   }
 }
 
-export async function regenerateResponse(history: Message[]): Promise<Message> {
+export async function regenerateResponse(history: Message[], previousResponse: string): Promise<Message> {
   try {
     const userMessages = history.filter(m => m.role === 'user');
     if (userMessages.length === 0) {
@@ -46,7 +46,8 @@ export async function regenerateResponse(history: Message[]): Promise<Message> {
 
     const { response } = await generateResponse({
       history: historyForRegeneration.map(({id, audioDataUri, ...rest}) => rest),
-      sentiment: 'neutral', 
+      sentiment: 'neutral',
+      previousResponse,
     });
 
     return {

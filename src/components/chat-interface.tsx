@@ -127,6 +127,8 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   
     const lastAiMessageIndex = messages.map(m => m.role).lastIndexOf('assistant');
     if (lastAiMessageIndex === -1) return;
+
+    const lastAiMessage = messages[lastAiMessageIndex];
     
     // History up to the message before the last AI response
     const historyForRegeneration = messages.slice(0, lastAiMessageIndex);
@@ -136,7 +138,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
     setMessages(historyForRegeneration); // Show UI state without the last AI message
 
     try {
-      const aiMessage = await regenerateResponse(historyForRegeneration);
+      const aiMessage = await regenerateResponse(historyForRegeneration, lastAiMessage.content);
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error(error);
@@ -207,6 +209,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
                     className="text-5xl font-bold text-foreground" 
                     style={{ 
                         fontFamily: welcomeFontFamily,
+                        color: welcomeDescriptionColor || undefined
                     }}
                   >
                     {welcomeTitle}

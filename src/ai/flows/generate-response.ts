@@ -19,6 +19,7 @@ const MessageSchema = z.object({
 const GenerateResponseInputSchema = z.object({
   history: z.array(MessageSchema).describe('The conversation history.'),
   sentiment: z.string().describe('The sentiment of the user input.'),
+  previousResponse: z.string().optional().describe('The previous response from the assistant, for regeneration.'),
 });
 
 export type GenerateResponseInput = z.infer<typeof GenerateResponseInputSchema>;
@@ -48,8 +49,14 @@ const generateResponsePrompt = ai.definePrompt({
   {{this.role}}: {{{this.content}}}
   {{/each}}
   assistant:
-
+  
+  {{#if previousResponse}}
+  IMPORTANT: The user has requested a new response. Do NOT provide the same response as before.
+  Previous Response: "{{{previousResponse}}}"
+  Generate a new, different, and relevant response based on the conversation history and sentiment:
+  {{else}}
   Generate a relevant and coherent response based on the conversation history and sentiment:
+  {{/if}}
   `,
 });
 
