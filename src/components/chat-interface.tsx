@@ -249,7 +249,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   };
   
   const chatAreaStyle: React.CSSProperties = {
-      backgroundColor: themeSettings.messageAreaBg || 'hsl(var(--background))',
+      backgroundColor: 'var(--custom-message-area-bg, hsl(var(--background)))',
       backgroundImage: chatBgImage ? `url(${chatBgImage})` : 'none',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -269,7 +269,7 @@ export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
           {messages.length === 0 && !isLoading ? (
               <div className="text-center mt-[calc(20vh-4rem)] animate-in fade-in-50 duration-500">
                   <h1 
-                    className="text-5xl font-bold text-foreground" 
+                    className="text-5xl font-bold text-primary" 
                     style={{ 
                         fontFamily: welcomeFontFamily
                     }}
