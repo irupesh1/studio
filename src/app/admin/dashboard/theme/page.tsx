@@ -30,23 +30,26 @@ export default function ThemePage() {
 
   const themeForm = useForm<ThemeCustomizationValues>({
       resolver: zodResolver(themeCustomizationSchema),
+      defaultValues: {
+        headerBg: "#ffffff",
+        headerText: "#0f172a",
+        messageAreaBg: "#ffffff",
+        inputBg: "#f1f5f9",
+        inputBorder: "#e2e8f0",
+        inputText: "#0f172a",
+        inputPlaceholder: "Ask NexaAI Anything...",
+        sendButtonBg: "#0f172a",
+        sendButtonIcon: "#f8fafc",
+      },
       effects: (form) => {
         const storedTheme = localStorage.getItem("customTheme");
         if (storedTheme) {
-            const parsedTheme = JSON.parse(storedTheme);
-            form.reset(parsedTheme);
-        } else {
-            form.reset({
-                headerBg: "#ffffff",
-                headerText: "#0f172a",
-                messageAreaBg: "#ffffff",
-                inputBg: "#f1f5f9",
-                inputBorder: "#e2e8f0",
-                inputText: "#0f172a",
-                inputPlaceholder: "Ask NexaAI Anything...",
-                sendButtonBg: "#0f172a",
-                sendButtonIcon: "#f8fafc",
-            });
+            try {
+                const parsedTheme = JSON.parse(storedTheme);
+                form.reset(parsedTheme);
+            } catch (e) {
+                console.error("Failed to parse theme from localStorage", e);
+            }
         }
       }
   });
